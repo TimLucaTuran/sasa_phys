@@ -217,10 +217,3 @@ def starProductanalyt(SIN_1,SIN_2):
     SOUT[:,3,3] = TBYY
 
     return SOUT
-
-A = np.ones((1,4,4))*4
-B = np.ones((1,4,4))*3
-
-print(A)
-print(B)
-print(starProductanalyt(A,B))
