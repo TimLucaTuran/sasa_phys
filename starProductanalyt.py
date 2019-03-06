@@ -1,4 +1,3 @@
-# star product
 import numpy as np
 def starProductanalyt(SIN_1,SIN_2):
 
