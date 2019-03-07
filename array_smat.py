@@ -43,10 +43,14 @@ def array_rot_smat(SMAT,ANG):
     #rotate SMAT 
     Sout = Rot_op_t @ SMAT @ Rot_op
     return Sout
-        
-# test
-A = np.ones((2,4,4))
-A[0,:,:] = np.arange(16).reshape((1,4,4))
-A[1,:,:] = np.arange(16,32).reshape((1,4,4))
-print(A)
-print(array_rot_smat(A,45))
+
+def array_phase_shift(SMAT,ANG):
+    """
+    Shifting the Phase of a Matrix
+    INPUT 1: L x 4 x 4 Array SMAT
+    INPUT 2: shifting angle
+    OUTPUT: shifted Matrix
+    """
+    smat_arg = np.angle(SMAT)
+    smat_abs = np.abs(SMAT)
+    return smat_abs*np.exp(1j*(smat_arg+ANG))
