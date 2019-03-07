@@ -12,6 +12,7 @@ def array_mirror_smat(SMAT):
 
 def array_flip_smat(SMAT):
     """
+    Array-Flipping
     INPUT: L x 4 x 4 Array SMAT
     OUTPUT: flipped SMAT
     """
@@ -23,8 +24,11 @@ def array_flip_smat(SMAT):
 def array_rot_smat(SMAT,ANG):
     """
     Array-Rotation
+    INPUT 1: L x 4 x 4 Array SMAT
+    INPUT 2: rotationangle in degrees
+    OUTPUT: rotated SMAT by angle ANG 
     """
-    #rotation angle in rad
+    #convert rotation angle in rad
     phi = ANG * np.pi/180
     #number of wavelengths
     numel_wav = SMAT.shape[0]
@@ -40,7 +44,9 @@ def array_rot_smat(SMAT,ANG):
     Sout = Rot_op_t @ SMAT @ Rot_op
     return Sout
         
+# test
 A = np.ones((2,4,4))
 A[0,:,:] = np.arange(16).reshape((1,4,4))
 A[1,:,:] = np.arange(16,32).reshape((1,4,4))
-print(array_rot_smat(A,90))
+print(A)
+print(array_rot_smat(A,45))
