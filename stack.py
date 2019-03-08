@@ -4,6 +4,14 @@ class Layer:
     def __init__(self, wav_vec ):
         self.wav_vec = wav_vec
         self.wav_vec_len = self.wav_vec.size
+        self.mirror = False
+        self.flip = False
+        self.angle = 0
+
+    def set_options(self, mirror=False, flip=False, angle=0):
+        self.mirror = mirror
+        self.flip = flip
+        self.angle = angle
 
 
 
@@ -66,7 +74,7 @@ class Stack:
 
     def create_interface(self, nml_1, nml_2):
         """
-        Creates the interface S-Matrix for the transmission between 2 Layers
+        Creates the interface S-Matrix for the transmission between 2 Non-Meta-Layers
 
         INPUT:
         nml_1 , nml_2: 2 NonMetaLayer Objects
