@@ -36,9 +36,8 @@ layer2 = NonMetaLayer(lambda_FMM, H_Sp, n_SiO2)
 
 layer3 = MetaLayer(lambda_FMM,SMAT_2,n_SiO2,n_SiO2)
 
-layer_list = [layer1, layer2]
+layer_list = [layer1, layer2,layer3]
 stack1 = Stack(layer_list,n_SiO2,subs_h,n_SiO2,subs_h)
-print("PROP_MAT_LAYER2 " , stack1.create_propagator(layer2).shape)
 s_out = stack1.build()
 s_out = np.squeeze(s_out)
 print("Ausgabe" , s_out[50,:,:])
