@@ -173,9 +173,11 @@ class Stack:
                                   self.subs_height,
                                   self.substrate
                                   )
-
-
-        s_mat_list = []
+        #add the substrate layer to the back
+        self.layer_list.append(subs_layer)
+        #create interface between the cladding and the first layer
+        inter = self.create_interface(clad_layer, self.layer_list[0])
+        s_mat_list = [inter]
         for i in range(len(self.layer_list) - 1):
             current_layer = self.layer_list[i]
             next_layer = self.layer_list[i+1]
