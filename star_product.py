@@ -2,12 +2,8 @@ import numpy as np
 
 
 def starProductanalyt(SIN_1,SIN_2):
-    print("SIN_1", SIN_1.shape)
-    print("SIN_2", SIN_2.shape)
     SIN_1 = np.squeeze(SIN_1)
     SIN_2 = np.squeeze(SIN_2)
-    print("SIN_1", SIN_1.shape)
-    print("SIN_2", SIN_2.shape)
     # S-matrix 1
     TF1XX = np.squeeze(SIN_1[:,0,0])
     TF1XY = np.squeeze(SIN_1[:,0,1])
@@ -43,8 +39,6 @@ def starProductanalyt(SIN_1,SIN_2):
     RF2YY = np.squeeze(SIN_2[:,3,1])
     TB2YX = np.squeeze(SIN_2[:,3,2])
     TB2YY = np.squeeze(SIN_2[:,3,3])
-    print("TF1XX",TF1XX.shape)
-    print("TF1XY",TF1XY.shape)
     # number of wavelengths
     numwavel = TF1XX.size
 
@@ -255,8 +249,6 @@ def starProduct_Cascaded(SMAT_LIST):
     StarMat = SMAT_LIST[0]
     print(SMAT_LIST[0].shape)
     for i in range(1, len(SMAT_LIST)):
-        print(i)
-        print(SMAT_LIST[i].shape)
         currentStarMat = starProductanalyt(StarMat, SMAT_LIST[i])
         
     return StarMat

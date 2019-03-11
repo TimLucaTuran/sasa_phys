@@ -102,8 +102,8 @@ class Stack:
             s_mat_list[i,:,1,1] = prop_y
             s_mat_list[i,:,2,2] = prop_x
             s_mat_list[i,:,3,3] = prop_y
-
-        return s_mat_list
+            
+        return np.squeeze(s_mat_list)
 
     def create_interface(self, l_1, l_2):
         """
@@ -191,8 +191,10 @@ class Stack:
 
             inter = self.create_interface(current_layer, next_layer)
             s_mat_list.append(prop)
-            s_mat_list.append(inter)
             print(i)
+            print("prop", prop[0,:,:])
+            s_mat_list.append(inter)
+            print("inter", inter[0,:,:])
         #end building loop
         
         
@@ -204,9 +206,9 @@ class Stack:
 
 
 
-
-layer = NonMetaLayer(1/np.arange(1,5), [5.3, 4.3], np.arange(4), 2*np.arange(4))
 """
+layer = NonMetaLayer(1/np.arange(1,5), [5.3, 4.3], np.arange(4), 2*np.arange(4))
+
 stack = Stack([layer])
 s_mat = stack.create_propagator(stack.layer_list[0])
 layer2 = NonMetaLayer()
