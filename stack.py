@@ -79,6 +79,7 @@ class Stack:
         self.substrate = substrate
         self.subs_height = subs_height
         self.wav_vec = self.layer_list[0].wav_vec
+        self.wav_vec_len = len(self.wav_vec)
 
     def create_propagator(self, nml):
         """
@@ -102,7 +103,7 @@ class Stack:
             s_mat_list[i,:,2,2] = prop_x
             s_mat_list[i,:,3,3] = prop_y
 
-        return s_mat_list
+        return np.squeeze(s_mat_list)
 
     def create_interface(self, l_1, l_2):
         """
@@ -128,18 +129,29 @@ class Stack:
             n2_x = l_2.cladding
             n2_y = l_2.cladding
 
-        #transmission and reflection in x and y directions
-
+        #transmission and reflection in x and y direction
 
         T_x = 2*n1_x/(n1_x + n2_x)
         T_y = 2*n1_y/(n1_y + n2_y)
         R_x = (n1_x - n2_x)/(n1_x + n2_x)
         R_y = (n1_y - n2_y)/(n1_y + n2_y)
-        return np.array([[ T_x  , 0    , R_x,    0],
-                         [ 0    , T_y  ,   0,  R_y],
-                         [-1*R_x, 0    , T_x,  0  ],
-                         [ 0    ,-1*R_y, 0  , T_y ]
+        s_mat_list = np.zeros((self.wav_vec_len,4,4)).astype(complex)
+        s_mat_list[:,0,0] = T_x
+        s_mat_list[:,1,1] = T_y
+        s_mat_list[:,2,2] = T_x
+        s_mat_list[:,3,3] = T_y
+        s_mat_list[:,0,2] = R_x
+        s_mat_list[:,1,3] = R_y
+        s_mat_list[:,2,0] = -1*R_x
+        s_mat_list[:,3,1] = -1 * R_y
+        """
+        S_out =  np.array([[ T_x  , zer    , R_x,    zer],
+                         [ zer   , T_y  ,   zer,  R_y],
+                         [-1*R_x, zer   , T_x,  zer  ],
+                         [ zer    ,-1*R_y, zer  , T_y ]
                         ])
+    """
+        return s_mat_list
 
 
     def build(self):
@@ -154,24 +166,19 @@ class Stack:
         #Create Layer-Object for the cladding
         clad_layer = NonMetaLayer(self.wav_vec,
                                   self.clad_height,
-                                  cladding
+                                  self.cladding
                                   )
         #Create Layer-Object for the substrate
         subs_layer = NonMetaLayer(self.wav_vec,
                                   self.subs_height,
-                                  substrate
+                                  self.substrate
                                   )
 
 
         s_mat_list = []
-        #create interface  matrix between the caladding and the first layer
-        inter = self.create_interface(clad_layer, self.layer_list[0])
-        s_mat_list.a
-        #start building loop
-
-        for i in range(len(s_mat_list) - 1):
-            current_layer = s_mat_list[i]
-            next_layer = s_mat_list[i+1]
+        for i in range(len(self.layer_list) - 1):
+            current_layer = self.layer_list[i]
+            next_layer = self.layer_list[i+1]
 
             if type(current_layer) is NonMetaLayer:
                 prop = self.create_propagator(current_layer)
@@ -185,18 +192,24 @@ class Stack:
 
             inter = self.create_interface(current_layer, next_layer)
             s_mat_list.append(prop)
+            print(i)
+            print("prop", prop[0,:,:])
             s_mat_list.append(inter)
+            print("inter", inter[0,:,:])
         #end building loop
 
+
         s_mat_list.append(self.create_propagator(subs_layer))
+        #print(s_mat_list)
+
         return starProduct_Cascaded(s_mat_list)
 
 
 
 
-
-layer = NonMetaLayer(1/np.arange(1,5), [5.3, 4.3], np.arange(4), 2*np.arange(4))
 """
+layer = NonMetaLayer(1/np.arange(1,5), [5.3, 4.3], np.arange(4), 2*np.arange(4))
+
 stack = Stack([layer])
 s_mat = stack.create_propagator(stack.layer_list[0])
 layer2 = NonMetaLayer()
