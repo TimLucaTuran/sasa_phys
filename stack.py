@@ -2,9 +2,7 @@ import numpy as np
 from star_product import *
 
 class Layer:
-    def __init__(self, wav_vec ):
-        self.wav_vec = wav_vec
-        self.wav_vec_len = self.wav_vec.size
+    def __init__(self):
         self.mirror = False
         self.flip = False
         self.angle = 0
@@ -27,8 +25,8 @@ class Layer:
 
 
 class MetaLayer(Layer):
-    def __init__(self, wav_vec, s_mat, cladding, substrate):
-        Layer.__init__(self, wav_vec)
+    def __init__(self, s_mat, cladding, substrate):
+        Layer.__init__(self)
         self.s_mat = s_mat
         self.cladding = cladding
         self.substrate = substrate
@@ -41,8 +39,8 @@ class NonMetaLayer(Layer):
     height : height in (μm)
     n_vec : one ``
     """
-    def __init__(self, wav_vec, height, *n_vec):
-        Layer.__init__(self, wav_vec)
+    def __init__(self, height, *n_vec):
+        Layer.__init__(self)
         self.height = height
         self.height_len = np.size(self.height)
         self.n_x = n_vec[0]
@@ -70,15 +68,12 @@ class Stack:
                 The refractiv index of the material below the stack
 
     """
-    def __init__(self, layer_list, cladding,
-                 clad_height, substrate, subs_height):
+    def __init__(self, layer_list, wav_vec, cladding, substrate):
 
         self.layer_list = layer_list
         self.cladding = cladding
-        self.clad_height = clad_height
         self.substrate = substrate
-        self.subs_height = subs_height
-        self.wav_vec = self.layer_list[0].wav_vec
+        self.wav_vec = wav_vec
         self.wav_vec_len = len(self.wav_vec)
 
     def create_propagator(self, nml):
@@ -94,10 +89,10 @@ class Stack:
         if nml.height_len == 1:
             nml.height = np.array([nml.height])
 
-        s_mat_list = np.zeros((nml.height_len, nml.wav_vec_len,4,4)).astype(complex)
+        s_mat_list = np.zeros((nml.height_len, self.wav_vec_len,4,4)).astype(complex)
         for i in range(nml.height_len):
-            prop_x = np.exp(1j * nml.n_x * nml.height[i] * 2*np.pi /nml.wav_vec)
-            prop_y = np.exp(1j * nml.n_y * nml.height[i] * 2*np.pi /nml.wav_vec)
+            prop_x = np.exp(1j * nml.n_x * nml.height[i] * 2*np.pi /self.wav_vec)
+            prop_y = np.exp(1j * nml.n_y * nml.height[i] * 2*np.pi /self.wav_vec)
             s_mat_list[i,:,0,0] = prop_x
             s_mat_list[i,:,1,1] = prop_y
             s_mat_list[i,:,2,2] = prop_x
@@ -164,19 +159,9 @@ class Stack:
         """
 
         #Create Layer-Object for the cladding
-        clad_layer = NonMetaLayer(self.wav_vec,
-                                  self.clad_height,
-                                  self.cladding
-                                  )
+        clad_layer = NonMetaLayer(None, self.cladding)
         #Create Layer-Object for the substrate
-        subs_layer = NonMetaLayer(self.wav_vec,
-                                  self.subs_height,
-                                  self.substrate
-                                  )
-
-
-
-
+        subs_layer = NonMetaLayer(None, self.substrate)
         #add the substrate layer to the back
         self.layer_list.append(subs_layer)
         #create interface between the cladding and the first layer

@@ -247,10 +247,10 @@ def starProduct_Cascaded(SMAT_LIST):
         raise ValueError("List has to be length 2 or larger")
 
     StarMat = SMAT_LIST[0]
-    print("first", SMAT_LIST[0][0])
+    print("current 1", SMAT_LIST[0][0])
     for i in range(1, len(SMAT_LIST)):
         StarMat = starProductanalyt(StarMat, SMAT_LIST[i])
-        print("current: ", i ,"\n", StarMat[0])
+        print("current: ", i+1 ,"\n", SMAT_LIST[i][0])
         #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
 
     return StarMat

@@ -29,15 +29,17 @@ SMAT_1 = np.squeeze(SMAT_1[H1_ind, W1_ind, L1_ind, :,:,:])
 
 SMAT_2 = data["SMAT_2"]
 SMAT_2 = np.squeeze(SMAT_2[H2_ind, RAD_ind, W2_ind, L2_ind, :,:,:])
+print("SMAT_2", SMAT_2[0])
 # Build Stack
-#layer1 = NonMetaLayer(lambda_FMM,subs_h,n_SiO2)
-layer1 = MetaLayer(lambda_FMM,SMAT_1,n_SiO2,n_SiO2)
-layer2 = NonMetaLayer(lambda_FMM, H_Sp, n_SiO2)
+#layer1 = NonMetaLayer(subs_h,n_SiO2)
+layer1 = MetaLayer(SMAT_1,n_SiO2,n_SiO2)
+layer2 = NonMetaLayer( H_Sp, n_SiO2)
 
-layer3 = MetaLayer(lambda_FMM,SMAT_2,n_SiO2,n_SiO2)
+layer3 = MetaLayer(SMAT_2,n_SiO2,n_SiO2)
+layer4 = NonMetaLayer( subs_h, n_SiO2)
 
-layer_list = [layer1, layer2,layer3]
-stack1 = Stack(layer_list,n_SiO2,0,n_vac,subs_h)
+layer_list = [layer1, layer2, layer3, layer4]
+stack1 = Stack(layer_list,lambda_FMM,n_SiO2,n_vac)
 s_out = stack1.build()
 s_out = np.squeeze(s_out)
 print("Ausgabe" , s_out[0])
