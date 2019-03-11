@@ -34,39 +34,45 @@ class MetaLayer(Layer):
         self.substrate = substrate
 
 class NonMetaLayer(Layer):
-    def __init__(self, wav_vec, height, *n_material):
+    """
+    Parameters
+    ----------
+    wav_vec : vector of the measured wavelengths
+    height : height in (μm)
+    n_vec : one ``
+    """
+    def __init__(self, wav_vec, height, *n_vec):
         Layer.__init__(self, wav_vec)
         self.height = height
         self.height_len = np.size(self.height)
-        self.n_x = n_material[0]
+        self.n_x = n_vec[0]
         #isotropic material
-        if len(n_material) == 1:
+        if len(n_vec) == 1:
             self.n_y = self.n_x
         #anisotropic material
-        elif len(n_material) == 2:
-            self.n_y = n_material[1]
+        elif len(n_vec) == 2:
+            self.n_y = n_vec[1]
         else:
             raise ValueError("input 1 or 2 refrectiv index vectors")
 
 
 
 class Stack:
+    """
+    Parameters
+    ----------
+    layer_list : list of Layer objects
+    cladding : float / vector
+               The refrectiv Index of the material on top of the stack
+               if the input is a single float n_i wavelength independent
+               behavior will be assumed.
+    substrate : float / vectors
+                The refractiv index of the material below the stack
 
+    """
     def __init__(self, layer_list, cladding,
                  clad_height, substrate, subs_height):
-        """
 
-        Parameters
-        ----------
-        layer_list : list of Layer objects
-        cladding : float / vector
-                   The refrectiv Index of the material on top of the stack
-                   if the input is a single float n_i wavelength independent
-                   behavior will be assumed.
-        substrate : float / vectors
-                    The refractiv index of the material below the stack
-
-        """
         self.layer_list = layer_list
         self.cladding = cladding
         self.clad_height = clad_height
@@ -175,7 +181,7 @@ class Stack:
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         #end building loop
-        
+
         s_mat_list.append(self.create_propagator(subs_layer))
         return starProduct_Cascaded(s_mat_list)
 
