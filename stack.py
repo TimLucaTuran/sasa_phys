@@ -199,14 +199,14 @@ class Stack:
 
             inter = self.create_interface(current_layer, next_layer)
             s_mat_list.append(prop)
+            """
             print(i)
             print("prop", prop[0,:,:])
-            s_mat_list.append(inter)
             print("inter", inter[0,:,:])
+            """
+            s_mat_list.append(inter)
         #end building loop
-
-
-        s_mat_list.append(self.create_propagator(subs_layer))
+        #s_mat_list.append(self.create_propagator(subs_layer))
         #print(s_mat_list)
 
         return starProduct_Cascaded(s_mat_list)

@@ -24,7 +24,7 @@ subs_h = 910 / 1000
 H_Sp   = 350 / 1000
 
 
-SMAT_1 = data["SMAT_1"]g
+SMAT_1 = data["SMAT_1"]
 SMAT_1 = np.squeeze(SMAT_1[H1_ind, W1_ind, L1_ind, :,:,:])
 
 SMAT_2 = data["SMAT_2"]
@@ -37,10 +37,10 @@ layer2 = NonMetaLayer(lambda_FMM, H_Sp, n_SiO2)
 layer3 = MetaLayer(lambda_FMM,SMAT_2,n_SiO2,n_SiO2)
 
 layer_list = [layer1, layer2,layer3]
-stack1 = Stack(layer_list,n_SiO2,subs_h,n_SiO2,subs_h)
+stack1 = Stack(layer_list,n_SiO2,0,n_vac,subs_h)
 s_out = stack1.build()
 s_out = np.squeeze(s_out)
-print("Ausgabe" , s_out[50,:,:])
+print("Ausgabe" , s_out[0])
 
 
 
