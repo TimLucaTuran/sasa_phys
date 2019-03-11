@@ -1,4 +1,5 @@
 import numpy as np
+from star_product import *
 
 class Layer:
     def __init__(self, wav_vec ):
@@ -26,10 +27,11 @@ class Layer:
 
 
 class MetaLayer(Layer):
-    def __init__(self, wav_vec, s_mat, n_embed):
+    def __init__(self, wav_vec, s_mat, cladding, substrate):
         Layer.__init__(self, wav_vec)
         self.s_mat = s_mat
-        self.n_embed = n_embed
+        self.cladding = cladding
+        self.substrate = substrate
 
 class NonMetaLayer(Layer):
     def __init__(self, wav_vec, height, *n_material):
@@ -50,7 +52,8 @@ class NonMetaLayer(Layer):
 
 class Stack:
 
-    def __init__(self, layer_list, cladding, substrate):
+    def __init__(self, layer_list, cladding,
+                 clad_height, substrate, subs_height):
         """
 
         Parameters
@@ -66,7 +69,10 @@ class Stack:
         """
         self.layer_list = layer_list
         self.cladding = cladding
+        self.clad_height = clad_height
         self.substrate = substrate
+        self.subs_height = subs_height
+        self.wav_vec = self.layer_list[0].wav_vec
 
     def create_propagator(self, nml):
         """
@@ -92,19 +98,37 @@ class Stack:
 
         return s_mat_list
 
-    def create_interface(self, nml_1, nml_2):
+    def create_interface(self, l_1, l_2):
         """
         Creates the interface S-Matrix for the transmission between 2 Non-Meta-Layers
 
         Parameters
         ----------
-        nml_1 , nml_2:  NonMetaLayer Objects
+        l_1 , l_2:  NonMetaLayer or MetaLayer Objects
         """
+
+        #load n_* from the Layers
+        if (type(l_1) is NonMetaLayer):
+            n1_x = l_1.n_x
+            n1_y = l_1.n_y
+        else:
+            n1_x = l_1.substrate
+            n1_y = l_1.substrate
+
+        if(type(l_2) is NonMetaLayer) :
+            n2_x = l_2.n_x
+            n2_y = l_2.n_y
+        else:
+            n2_x = l_2.cladding
+            n2_y = l_2.cladding
+
         #transmission and reflection in x and y directions
-        T_x = 2*nml1.n_x/(nml_1.n_x + nml_2.n_x)
-        T_y = 2*nml1.n_y/(nml_1.n_y + nml_2.n_y)
-        R_x = (nml_1.n_x - nml_2.n_x)/(nml_1.n_x + nml_2.n_x)
-        R_y = (nml_1.n_y - nml_2.n_y)/(nml_1.n_y + nml_2.n_y)
+
+
+        T_x = 2*n1_x/(n1_x + n2_x)
+        T_y = 2*n1_y/(n1_y + n2_y)
+        R_x = (n1_x - n2_x)/(n1_x + n2_x)
+        R_y = (n1_y - n2_y)/(n1_y + n2_y)
         return np.array([[ T_x  , 0    , R_x,    0],
                          [ 0    , T_y  ,   0,  R_y],
                          [-1*R_x, 0    , T_x,  0  ],
@@ -117,11 +141,53 @@ class Stack:
 
 
         """
+        #Create Layer-Object for the cladding
+        clad_layer = NonMetaLayer(self.wav_vec,
+                                  self.clad_height,
+                                  cladding
+                                  )
+        #Create Layer-Object for the substrate
+        subs_layer = NonMetaLayer(self.wav_vec,
+                                  self.subs_height,
+                                  substrate
+                                  )
+        #Add cladding and substrate to the stack_list
+        self.layer_list.insert(0, clad_layer)
+        self.layer_list.append(subs_layer)
+
+        #start building loop
+        s_mat_list = []
+        for i in range(len(s_mat_list) - 1):
+            current_layer = s_mat_list[i]
+            next_layer = s_mat_list[i+1]
+
+            if type(current_layer) is NonMetaLayer:
+                prop = self.create_propagator(current_layer)
+
+            elif type(current_layer) is MetaLayer:
+                prop = current_layer.s_mat
+
+            else:
+                raise ValueError("Stack has to consist of Mata and \
+                                NonMetaLayers")
+
+            inter = self.create_interface(current_layer, next_layer)
+            s_mat_list.append(prop)
+            s_mat_list.append(inter)
+        #end building loop
+        
+        s_mat_list.append(self.create_propagator(subs_layer))
+        return starProduct_Cascaded(s_mat_list)
+
+
 
 
 
 layer = NonMetaLayer(1/np.arange(1,5), [5.3, 4.3], np.arange(4), 2*np.arange(4))
+"""
 stack = Stack([layer])
 s_mat = stack.create_propagator(stack.layer_list[0])
+layer2 = NonMetaLayer()
 for i in range(4):
     print(s_mat[1,2,i,i])
+"""
