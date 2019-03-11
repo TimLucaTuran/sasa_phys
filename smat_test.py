@@ -1,8 +1,13 @@
 import numpy as np
 import scipy.io
+from stack import *
 
 data = scipy.io.loadmat('SASA_example_data.mat')
 
+lambda_FMM = np.linspace(0.6, 1.62, 64)
+
+n_vac = np.ones((1, np.size(lambda_FMM)))
+n_SiO2 = data["n_SiO2"]
 #First Meta-Layer parameters
 H1_ind  = 0 # height [50, 55] nm
 W1_ind  = 0 # width 75:5:90 nm
@@ -14,10 +19,29 @@ RAD_ind = 2 # corner radius [20 22.5 25] nm
 W2_ind  = 3 # width 60:5:80 nm
 L2_ind  = 0 # length 220:5:250 nm
 
+subs_h = 910 / 1000
+
+H_Sp   = 350 / 1000
+
+
 SMAT_1 = data["SMAT_1"]
 SMAT_1 = np.squeeze(SMAT_1[H1_ind, W1_ind, L1_ind, :,:,:])
 
 SMAT_2 = data["SMAT_2"]
 SMAT_2 = np.squeeze(SMAT_2[H2_ind, RAD_ind, W2_ind, L2_ind, :,:,:])
 
-print(SMAT_2)
+# Build Stack
+#layer1 = NonMetaLayer(lambda_FMM,subs_h,n_SiO2)
+layer1 = MetaLayer(lambda_FMM,SMAT_1,n_SiO2,n_SiO2)
+layer2 = NonMetaLayer(lambda_FMM, H_Sp, n_SiO2)
+layer3 = MetaLayer(lambda_FMM,SMAT_2,n_SiO2,n_SiO2)
+
+layer_list = [layer1, layer2, layer3]
+stack1 = Stack(layer_list,n_SiO2,subs_h,n_SiO2,subs_h)
+s_out = stack1.build()
+
+print(s_out)
+
+
+
+#print(SMAT_2)
