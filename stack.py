@@ -144,9 +144,13 @@ class Stack:
 
     def build(self):
         """
+        Build all the propagation and interface matrices and multiplies them.
 
-
+        Returns
+        -------
+        s_mat : Lx4x4 S-matrix describing the whole stack
         """
+
         #Create Layer-Object for the cladding
         clad_layer = NonMetaLayer(self.wav_vec,
                                   self.clad_height,
@@ -157,12 +161,14 @@ class Stack:
                                   self.subs_height,
                                   substrate
                                   )
-        #Add cladding and substrate to the stack_list
-        self.layer_list.insert(0, clad_layer)
-        self.layer_list.append(subs_layer)
 
-        #start building loop
+
         s_mat_list = []
+        #create interface  matrix between the caladding and the first layer
+        inter = self.create_interface(clad_layer, self.layer_list[0])
+        s_mat_list.a
+        #start building loop
+
         for i in range(len(s_mat_list) - 1):
             current_layer = s_mat_list[i]
             next_layer = s_mat_list[i+1]
