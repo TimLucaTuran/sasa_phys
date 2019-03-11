@@ -24,7 +24,7 @@ subs_h = 910 / 1000
 H_Sp   = 350 / 1000
 
 
-SMAT_1 = data["SMAT_1"]
+SMAT_1 = data["SMAT_1"]g
 SMAT_1 = np.squeeze(SMAT_1[H1_ind, W1_ind, L1_ind, :,:,:])
 
 SMAT_2 = data["SMAT_2"]
