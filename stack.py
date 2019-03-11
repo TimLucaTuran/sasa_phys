@@ -176,7 +176,7 @@ class Stack:
 
 
         s_mat_list = []
-        for i in range(len(self.layer_list) - 1):
+        for i in range(len(self.layer_list)-1):
             current_layer = self.layer_list[i]
             next_layer = self.layer_list[i+1]
 
