@@ -21,6 +21,13 @@ class Layer:
 
 
 class MetaLayer(Layer):
+    """
+    Parameters
+    ----------
+    s_mat : the 4x4 S-Matrix of the Meta-Layer
+    cladding : vector containing the refraction indices of the cladding
+    substrate : vector containing the refraction indices of the substrate
+    """
     def __init__(self, s_mat, cladding, substrate):
         Layer.__init__(self)
         self.s_mat = s_mat
@@ -31,7 +38,6 @@ class NonMetaLayer(Layer):
     """
     Parameters
     ----------
-    wav_vec : vector of the measured wavelengths
     height : height in (μm)
     n_vec : one or two vactors containing the diffraction indeces
             if one vector is given homogenous behavior will be assumed
@@ -113,7 +119,8 @@ class Stack:
 
     def create_interface(self, l_2, l_1):
         """
-        Creates the interface S-Matrix for the transmission between 2 Non-Meta-Layers
+        Creates the interface S-Matrix for the transmission
+        between 2 Non-Meta-Layers
 
         Parameters
         ----------
@@ -157,15 +164,12 @@ class Stack:
         [-1*R_x, 0   , T_x,  0  ],
         [ 0    ,-1*R_y, 0  , T_y ]
         """
-        #apply symmetry opperations
-
-
         return s_mat_list
 
     def create_interface_rot(self, l_2, l_1):
         """
         Creates the interface S-Matrix for the transmission between
-        2 Non-Meta-Layers in case of rotation
+        2 Non-Meta-Layers in case of rotation, uses create_interface
 
         Parameters
         ----------
@@ -182,19 +186,20 @@ class Stack:
 
     def build(self):
         """
-        Build all the propagation and interface matrices and multiplies them.
+        Builds all the propagation and interface matrices and multiplies them.
 
         Returns
         -------
         s_mat : Lx4x4 S-matrix describing the whole stack
         """
 
-        #Create Layer-Object for the cladding
+        #Create Layer-Objects for the cladding and substrate
         clad_layer = NonMetaLayer(None, self.cladding)
-        #Create Layer-Object for the substrate
         subs_layer = NonMetaLayer(None, self.substrate)
+
         #add the substrate layer to the back
         self.layer_list.append(subs_layer)
+
         #create interface between the cladding and the first layer
         inter = self.create_interface(clad_layer, self.layer_list[0])
         s_mat_list = [inter]
