@@ -37,7 +37,8 @@ class NonMetaLayer(Layer):
     ----------
     wav_vec : vector of the measured wavelengths
     height : height in (μm)
-    n_vec : one ``
+    n_vec : one or two vactors containing the diffraction indeces
+            if one vector is given homogenous behavior will be assumed
     """
     def __init__(self, height, *n_vec):
         Layer.__init__(self)
@@ -100,7 +101,7 @@ class Stack:
 
         return np.squeeze(s_mat_list)
 
-    def create_interface(self, l_1, l_2):
+    def create_interface(self, l_2, l_1):
         """
         Creates the interface S-Matrix for the transmission between 2 Non-Meta-Layers
 
@@ -126,26 +127,26 @@ class Stack:
 
         #transmission and reflection in x and y direction
 
-        T_x = 2*n1_x/(n1_x + n2_x)
-        T_y = 2*n1_y/(n1_y + n2_y)
+        s_mat_list = np.zeros((self.wav_vec_len,4,4)).astype(complex)
+        #Transmission
+        s_mat_list[:,0,0] = 2*n1_x/(n1_x + n2_x)
+        s_mat_list[:,1,1] = 2*n1_y/(n1_y + n2_y)
+        s_mat_list[:,2,2] = 2*n2_x/(n1_x + n2_x)
+        s_mat_list[:,3,3] = 2*n2_y/(n1_y + n2_y)
+        #Reflection
         R_x = (n1_x - n2_x)/(n1_x + n2_x)
         R_y = (n1_y - n2_y)/(n1_y + n2_y)
-        s_mat_list = np.zeros((self.wav_vec_len,4,4)).astype(complex)
-        s_mat_list[:,0,0] = T_x
-        s_mat_list[:,1,1] = T_y
-        s_mat_list[:,2,2] = T_x
-        s_mat_list[:,3,3] = T_y
         s_mat_list[:,0,2] = R_x
         s_mat_list[:,1,3] = R_y
         s_mat_list[:,2,0] = -1*R_x
-        s_mat_list[:,3,1] = -1 * R_y
+        s_mat_list[:,3,1] = -1*R_y
         """
-        S_out =  np.array([[ T_x  , zer    , R_x,    zer],
-                         [ zer   , T_y  ,   zer,  R_y],
-                         [-1*R_x, zer   , T_x,  zer  ],
-                         [ zer    ,-1*R_y, zer  , T_y ]
-                        ])
-    """
+        This Operrator is constructed:
+        [T_x  , 0    , R_x,    0],
+        [ 0   , T_y  ,   0,  R_y],
+        [-1*R_x, 0   , T_x,  0  ],
+        [ 0    ,-1*R_y, 0  , T_y ]
+        """
         return s_mat_list
 
 
@@ -184,27 +185,7 @@ class Stack:
 
             inter = self.create_interface(current_layer, next_layer)
             s_mat_list.append(prop)
-            """
-            print(i)
-            print("prop", prop[0,:,:])
-            print("inter", inter[0,:,:])
-            """
             s_mat_list.append(inter)
         #end building loop
-        #s_mat_list.append(self.create_propagator(subs_layer))
-        #print(s_mat_list)
 
         return starProduct_Cascaded(s_mat_list)
-
-
-
-
-"""
-layer = NonMetaLayer(1/np.arange(1,5), [5.3, 4.3], np.arange(4), 2*np.arange(4))
-
-stack = Stack([layer])
-s_mat = stack.create_propagator(stack.layer_list[0])
-layer2 = NonMetaLayer()
-for i in range(4):
-    print(s_mat[1,2,i,i])
-"""
