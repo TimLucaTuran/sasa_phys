@@ -1,23 +1,19 @@
 import numpy as np
 from star_product import *
+from smat_oparations import *
 
 class Layer:
     def __init__(self):
-        self.mirror = False
-        self.flip = False
+        self.mirror_bool = False
+        self.flip_bool = False
         self.angle = 0
 
-    def set_options(self, mirror=False, flip=False, angle=0):
-        self.mirror = mirror
-        self.flip = flip
-        self.angle = angle
-
     def flip(self):
-        self.flip = True
+        self.flip_bool = True
         return
 
     def mirror(self):
-        self.mirror = True
+        self.mirror_bool = True
 
     def rotate(self, angle):
         self.angle = angle
@@ -99,7 +95,16 @@ class Stack:
             s_mat_list[i,:,2,2] = prop_x
             s_mat_list[i,:,3,3] = prop_y
 
-        return np.squeeze(s_mat_list)
+        s_mat = np.squeeze(s_mat_list)
+        #apply symmetry opperations
+        if nml.mirror_bool:
+            s_mat = array_mirror_smat(s_mat)
+        if nml.flip_bool:
+            s_mat = array_flip_smat(s_mat)
+        if nml.angle != 0:
+            s_mat = array_rot_smat(s_mat, nml.angle)
+
+        return s_mat
 
     def create_interface(self, l_2, l_1):
         """
@@ -147,7 +152,27 @@ class Stack:
         [-1*R_x, 0   , T_x,  0  ],
         [ 0    ,-1*R_y, 0  , T_y ]
         """
+        #apply symmetry opperations
+
+
         return s_mat_list
+
+    def create_interface_rot(self, l_2, l_1):
+        """
+        Creates the interface S-Matrix for the transmission between
+        2 Non-Meta-Layers in case of rotation
+
+        Parameters
+        ----------
+        l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+        """
+        vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
+        s_mat1 = self.create_interface(vacuum_layer, l_2)
+        s_mat2 = self.create_interface(l_1, vacuum_layer)
+        s_mat = starProductanalyt(array_rot_smat(s_mat1, l_2.angle),
+                                  array_rot_smat(s_mat2, l_1.angle))
+        return  s_mat
+
 
 
     def build(self):
@@ -177,13 +202,18 @@ class Stack:
                 prop = self.create_propagator(current_layer)
 
             elif type(current_layer) is MetaLayer:
-                prop = current_layer.s_mat
+                prop = array_rot_smat(current_layer.s_mat,current_layer.angle)
+
 
             else:
                 raise ValueError("Stack has to consist of Mata and \
                                 NonMetaLayers")
-
-            inter = self.create_interface(current_layer, next_layer)
+            #This can be further optimized by a better differentiation between
+            #the cases
+            if (current_layer.angle != 0) or (next_layer.angle != 0):
+                inter = self.create_interface_rot(current_layer, next_layer)
+            else:
+                inter = self.create_interface(current_layer, next_layer)
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         #end building loop

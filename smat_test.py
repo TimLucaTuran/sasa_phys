@@ -36,6 +36,8 @@ layer1 = MetaLayer(SMAT_1,n_SiO2,n_SiO2)
 layer2 = NonMetaLayer( H_Sp, n_SiO2)
 
 layer3 = MetaLayer(SMAT_2,n_SiO2,n_SiO2)
+layer3.rotate(35)
+
 layer4 = NonMetaLayer( subs_h, n_SiO2)
 
 layer_list = [layer1, layer2, layer3, layer4]
