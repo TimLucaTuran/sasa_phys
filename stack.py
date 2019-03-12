@@ -73,36 +73,41 @@ class Stack:
         self.wav_vec = wav_vec
         self.wav_vec_len = len(self.wav_vec)
 
-    def create_propagator(self, nml):
+    def create_propagator(self, layer):
         """
-        Creates the propergator S-Matrix of a Non-Meta-Layers
+        Creates the propergator S-Matrix
 
         Parameters
         ----------
-        nml: NonMetaLayer object
+        layer: NonMetaLayer or MetaLayer object
         """
+        if type(layer) is NonMetaLayer:
+            #Height is a scalar
+            if layer.height_len == 1:
+                layer.height = np.array([layer.height])
 
-        #Height is a scalar
-        if nml.height_len == 1:
-            nml.height = np.array([nml.height])
+            s_mat_list = np.zeros((layer.height_len, self.wav_vec_len,4,4)).astype(complex)
+            for i in range(layer.height_len):
+                prop_x = np.exp(1j * layer.n_x * layer.height[i] * 2*np.pi /self.wav_vec)
+                prop_y = np.exp(1j * layer.n_y * layer.height[i] * 2*np.pi /self.wav_vec)
+                s_mat_list[i,:,0,0] = prop_x
+                s_mat_list[i,:,1,1] = prop_y
+                s_mat_list[i,:,2,2] = prop_x
+                s_mat_list[i,:,3,3] = prop_y
 
-        s_mat_list = np.zeros((nml.height_len, self.wav_vec_len,4,4)).astype(complex)
-        for i in range(nml.height_len):
-            prop_x = np.exp(1j * nml.n_x * nml.height[i] * 2*np.pi /self.wav_vec)
-            prop_y = np.exp(1j * nml.n_y * nml.height[i] * 2*np.pi /self.wav_vec)
-            s_mat_list[i,:,0,0] = prop_x
-            s_mat_list[i,:,1,1] = prop_y
-            s_mat_list[i,:,2,2] = prop_x
-            s_mat_list[i,:,3,3] = prop_y
-
-        s_mat = np.squeeze(s_mat_list)
+                s_mat = np.squeeze(s_mat_list)
+        elif type(layer) is MetaLayer:
+            s_mat = layer.s_mat
+        else:
+            raise ValueError("Stack has to consist of Mata and \
+                            NonMetaLayers")
         #apply symmetry opperations
-        if nml.mirror_bool:
+        if layer.mirror_bool:
             s_mat = array_mirror_smat(s_mat)
-        if nml.flip_bool:
+        if layer.flip_bool:
             s_mat = array_flip_smat(s_mat)
-        if nml.angle != 0:
-            s_mat = array_rot_smat(s_mat, nml.angle)
+        if layer.angle != 0:
+            s_mat = array_rot_smat(s_mat, layer.angle)
 
         return s_mat
 
@@ -198,22 +203,15 @@ class Stack:
             current_layer = self.layer_list[i]
             next_layer = self.layer_list[i+1]
 
-            if type(current_layer) is NonMetaLayer:
-                prop = self.create_propagator(current_layer)
+            prop = self.create_propagator(current_layer)
 
-            elif type(current_layer) is MetaLayer:
-                prop = array_rot_smat(current_layer.s_mat,current_layer.angle)
-
-
-            else:
-                raise ValueError("Stack has to consist of Mata and \
-                                NonMetaLayers")
             #This can be further optimized by a better differentiation between
             #the cases
             if (current_layer.angle != 0) or (next_layer.angle != 0):
                 inter = self.create_interface_rot(current_layer, next_layer)
             else:
                 inter = self.create_interface(current_layer, next_layer)
+
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         #end building loop
