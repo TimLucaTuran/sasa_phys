@@ -254,23 +254,3 @@ def starProduct_Cascaded(SMAT_LIST):
         #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
 
     return StarMat
-
-
-
-    """
-def starProduct_Recursiv(SMAT_LIST):
-    A recursiv variant of starProduct_Cascaded
-
-    if not type(SMAT_LIST) is list:
-        raise TypeError("Input has to be a list")
-    elif len(SMAT_LIST) <= 1:
-        raise ValueError("List has to be length 2 or larger")
-
-    StarMat = SMAT_LIST[0]
-
-    if len(SMAT_LIST) >= 3:
-        StarMat = starProductanalyt(StarMat, starProduct_Recursiv(SMAT_LIST[1:]))
-    else:
-        StarMat = starProductanalyt(StarMat, SMAT_LIST[1])
-    return StarMat
-    """
