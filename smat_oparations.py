@@ -1,37 +1,66 @@
 import numpy as np
 
-def array_mirror_smat(SMAT):
+def mirror_smat(s_mat):
     """
-    INPUT: L x 4 x 4 Array SMAT
-    OUTPUT: mirrored SMAT """
+    Mirror a given S-Matrix 
+    
+    Parameters
+    ----------
+    s_mat: L x 4 x 4 numpy Array 
+        S-Matrix
+        
+    Returns
+    -------
+    s_out: L x 4 x 4 numpy Array
+        mirrored S-Matrix
+    """
     mask = np.array([[1, -1, 1,-1]
                     ,[-1,1,-1,1]
                     ,[1,-1,1,-1]
                     ,[-1,1,-1,1]])
-    return SMAT*mask
+    s_out = s_mat * mask
+    return s_out
 
-def array_flip_smat(SMAT):
+def flip_smat(s_mat):
     """
-    Array-Flipping
-    INPUT: L x 4 x 4 Array SMAT
-    OUTPUT: flipped SMAT
+    Flip a given S-Matrix
+    
+    Parameters
+    ----------
+    s_mat: L x 4 x 4 numpy Array 
+        S-Matrix
+    
+    Returns
+    -------
+    s_out: L x 4 x 4 numpy Array
+        flipped S-Matrix
     """
-    Sout = np.block([
+    s_out = np.block([
                     [SMAT[:,2:4,2:4],   SMAT[:,2:4,0:2]],
                     [SMAT[:,0:2,2:4],   SMAT[:,0:2,0:2]]])
-    return array_mirror_smat(Sout)
+    s_out = array_mirror_smat(Sout)
+    return s_out
 
-def array_rot_smat(SMAT,ANG):
+def rot_smat(s_mat,ang):
     """
-    Array-Rotation
-    INPUT 1: L x 4 x 4 Array SMAT
-    INPUT 2: rotationangle in degrees
-    OUTPUT: rotated SMAT by angle ANG
+    Rotate a given S-Matrix by a given angle
+    
+    Parameters
+    ----------
+    s_mat: L x 4 x 4 numpy Array 
+        S-Matrix
+    ang: float
+        rotaion angle in rad
+    
+    Returns
+    -------
+    s_out: L x 4 x 4 numpy Array
+        rotated S-Matrix
     """
     #convert rotation angle in rad
-    phi = ANG * np.pi/180
+    phi = ang * np.pi/180
     #number of wavelengths
-    numel_wav = SMAT.shape[0]
+    numel_wav = s_mat.shape[0]
     # Determine 2x2 rotation matrix to be applied on the matrix blocks
     R = np.array([   [np.cos(phi), -np.sin(phi) ],
             [np.sin(phi), np.cos(phi) ] ])
@@ -40,16 +69,26 @@ def array_rot_smat(SMAT,ANG):
                             [np.zeros((2,2)),  R]])
 
     #rotate SMAT
-    Sout = Rot_op.T @ SMAT @ Rot_op
-    return Sout
+    s_out = Rot_op.T @ s_mat @ Rot_op
+    return s_out
 
-def array_phase_shift(SMAT,ANG):
+def phase_shift(SMAT,ANG):
     """
-    Shifting the Phase of a Matrix
-    INPUT 1: L x 4 x 4 Array SMAT
-    INPUT 2: shifting angle
-    OUTPUT: shifted Matrix
+    Shifting the phase of a given S-Matrix by a given angle
+    
+    Parameters
+    ----------
+    s_mat: L x 4 x 4 numpy Array 
+        S-Matrix
+    ang: float
+        rotaion angle in rad
+    
+    Returns
+    -------
+    s_out: L x 4 x 4 numpy Array
+        shifted S-Matrix
     """
     smat_arg = np.angle(SMAT)
     smat_abs = np.abs(SMAT)
-    return smat_abs*np.exp(1j*(smat_arg+ANG))
+    s_out = smat_abs*np.exp(1j*(smat_arg+ANG))
+    return s_out

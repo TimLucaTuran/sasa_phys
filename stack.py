@@ -3,6 +3,11 @@ from star_product import *
 from smat_oparations import *
 
 class Layer:
+    """
+    Parrent class of Meta- and NonMetaLayer, contains information about
+    which symmetry opperations will be applied.
+    """
+
     def __init__(self):
         self.mirror_bool = False
         self.flip_bool = False
@@ -22,8 +27,8 @@ class Layer:
 
 class MetaLayer(Layer):
     """
-    Object to describe a Meta-Surface in the Stack
-    
+    Class to describe a Meta-Surface in the Stack
+
     Parameters
     ----------
     s_mat : the 4x4 S-Matrix of the Meta-Layer, externally simulated/measured
@@ -64,15 +69,21 @@ class NonMetaLayer(Layer):
 
 class Stack:
     """
+    Class to describe the whole Stack, contains information about cladding,
+    substrate and further options.
+
     Parameters
     ----------
     layer_list : list of Layer objects
-    cladding : float / vector
-               The refrectiv Index of the material on top of the stack
+    wav_vec : vector
+              The target wavelengths where the Meta-Surface was simulated/
+              measured
+    cladding : vector
+               The refrectiv indeces of the material on top of the stack,
                if the input is a single float n_i wavelength independent
                behavior will be assumed.
-    substrate : float / vectors
-                The refractiv index of the material below the stack
+    substrate : vectors
+                The refractiv indeces of the material below the stack
 
     """
     def __init__(self, layer_list, wav_vec, cladding, substrate):
@@ -89,46 +100,53 @@ class Stack:
 
         Parameters
         ----------
-        layer: NonMetaLayer or MetaLayer object
+        layer : NonMetaLayer or MetaLayer object
+
+        Returns
+        -------
+        s_mat : Lx4x4 S-Matrix
         """
         if type(layer) is NonMetaLayer:
             #Height is a scalar
             if layer.height_len == 1:
                 layer.height = np.array([layer.height])
 
-            s_mat_list = np.zeros((layer.height_len, self.wav_vec_len,4,4)).astype(complex)
+            s_mat = np.zeros((layer.height_len, self.wav_vec_len,4,4)).astype(complex)
             for i in range(layer.height_len):
                 prop_x = np.exp(1j * layer.n_x * layer.height[i] * 2*np.pi /self.wav_vec)
                 prop_y = np.exp(1j * layer.n_y * layer.height[i] * 2*np.pi /self.wav_vec)
-                s_mat_list[i,:,0,0] = prop_x
-                s_mat_list[i,:,1,1] = prop_y
-                s_mat_list[i,:,2,2] = prop_x
-                s_mat_list[i,:,3,3] = prop_y
+                s_mat[i,:,0,0] = prop_x
+                s_mat[i,:,1,1] = prop_y
+                s_mat[i,:,2,2] = prop_x
+                s_mat[i,:,3,3] = prop_y
 
-                s_mat = np.squeeze(s_mat_list)
         elif type(layer) is MetaLayer:
-            s_mat = layer.s_mat
+            s_mat = layer.s_mat.reshape((1,self.wav_vec_len,4,4))
         else:
             raise ValueError("Stack has to consist of Mata and \
                             NonMetaLayers")
         #apply symmetry opperations
         if layer.mirror_bool:
-            s_mat = array_mirror_smat(s_mat)
+            s_mat = mirror_smat(s_mat)
         if layer.flip_bool:
-            s_mat = array_flip_smat(s_mat)
+            s_mat = flip_smat(s_mat)
         if layer.angle != 0:
-            s_mat = array_rot_smat(s_mat, layer.angle)
+            s_mat = rot_smat(s_mat, layer.angle)
 
         return s_mat
 
     def create_interface(self, l_2, l_1):
         """
         Creates the interface S-Matrix for the transmission
-        between 2 Non-Meta-Layers
+        between two Layers
 
         Parameters
         ----------
         l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+
+        Returns
+        -------
+        s_mat : Lx4x4 S-Matrix
         """
 
         #load n_* from the Layers
@@ -168,22 +186,26 @@ class Stack:
         [-1*R_x, 0   , T_x,  0  ],
         [ 0    ,-1*R_y, 0  , T_y ]
         """
-        return s_mat_list
+        return s_mat_list.reshape((1,self.wav_vec_len,4,4))
 
     def create_interface_rot(self, l_2, l_1):
         """
         Creates the interface S-Matrix for the transmission between
-        2 Non-Meta-Layers in case of rotation, uses create_interface
+        two Layers in case of rotation, uses create_interface
 
         Parameters
         ----------
         l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+
+        Returns
+        -------
+        s_mat : Lx4x4 S-Matrix
         """
         vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
-        s_mat = starProductanalyt(array_rot_smat(s_mat1, l_2.angle),
-                                  array_rot_smat(s_mat2, l_1.angle))
+        s_mat = starProductanalyt(rot_smat(s_mat1, l_2.angle),
+                                  rot_smat(s_mat2, l_1.angle))
         return  s_mat
 
 
@@ -224,5 +246,5 @@ class Stack:
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         #end building loop
-
-        return starProduct_Cascaded(s_mat_list)
+        s_out = np.squeeze(starProduct_Cascaded(s_mat_list))
+        return s_out
