@@ -22,9 +22,11 @@ class Layer:
 
 class MetaLayer(Layer):
     """
+    Object to describe a Meta-Surface in the Stack
+    
     Parameters
     ----------
-    s_mat : the 4x4 S-Matrix of the Meta-Layer
+    s_mat : the 4x4 S-Matrix of the Meta-Layer, externally simulated/measured
     cladding : vector containing the refraction indices of the cladding
     substrate : vector containing the refraction indices of the substrate
     """
@@ -36,6 +38,8 @@ class MetaLayer(Layer):
 
 class NonMetaLayer(Layer):
     """
+    Class to describe a homogenous isotropic or anisotropic Layer
+
     Parameters
     ----------
     height : height in (μm)
