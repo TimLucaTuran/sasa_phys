@@ -246,5 +246,5 @@ class Stack:
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         #end building loop
-
-        return starProduct_Cascaded(s_mat_list)
+        s_out = np.squeeze(starProduct_Cascaded(s_mat_list))
+        return s_out

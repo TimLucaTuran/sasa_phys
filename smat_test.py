@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import scipy.io
 from stack import *
 
@@ -42,10 +43,15 @@ layer4 = NonMetaLayer(subs_h, n_SiO2)
 layer_list = [layer1, layer2, layer3, layer4]
 stack1 = Stack(layer_list,lambda_FMM,n_SiO2,n_vac)
 s_out = stack1.build()
-s_out = np.squeeze(s_out)
 print("Ausgabe" , s_out[1,0,:,:])
 
+#intensity plot
+index_1 = 2
+index_2 = 2
 
+intensity = np.abs( s_out[0,:, index_1, index_2] )**2 / n_SiO2
+plt.plot(lambda_FMM, intensity)
+plt.show()
 
 
 #print(SMAT_2)

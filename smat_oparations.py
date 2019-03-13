@@ -58,9 +58,9 @@ def rot_smat(s_mat,ang):
         rotated S-Matrix
     """
     #convert rotation angle in rad
-    phi = ANG * np.pi/180
+    phi = ang * np.pi/180
     #number of wavelengths
-    numel_wav = SMAT.shape[0]
+    numel_wav = s_mat.shape[0]
     # Determine 2x2 rotation matrix to be applied on the matrix blocks
     R = np.array([   [np.cos(phi), -np.sin(phi) ],
             [np.sin(phi), np.cos(phi) ] ])
@@ -69,7 +69,7 @@ def rot_smat(s_mat,ang):
                             [np.zeros((2,2)),  R]])
 
     #rotate SMAT
-    s_out = Rot_op.T @ SMAT @ Rot_op
+    s_out = Rot_op.T @ s_mat @ Rot_op
     return s_out
 
 def phase_shift(SMAT,ANG):
