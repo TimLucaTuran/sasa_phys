@@ -109,11 +109,11 @@ class Stack:
                             NonMetaLayers")
         #apply symmetry opperations
         if layer.mirror_bool:
-            s_mat = array_mirror_smat(s_mat)
+            s_mat = mirror_smat(s_mat)
         if layer.flip_bool:
-            s_mat = array_flip_smat(s_mat)
+            s_mat = flip_smat(s_mat)
         if layer.angle != 0:
-            s_mat = array_rot_smat(s_mat, layer.angle)
+            s_mat = rot_smat(s_mat, layer.angle)
 
         return s_mat
 
@@ -178,8 +178,8 @@ class Stack:
         vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
-        s_mat = starProductanalyt(array_rot_smat(s_mat1, l_2.angle),
-                                  array_rot_smat(s_mat2, l_1.angle))
+        s_mat = starProductanalyt(rot_smat(s_mat1, l_2.angle),
+                                  rot_smat(s_mat2, l_1.angle))
         return  s_mat
 
 
