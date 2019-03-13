@@ -50,7 +50,7 @@ index_1 = 2
 index_2 = 2
 
 intensity = np.abs( s_out[0,:, index_1, index_2] )**2 / n_SiO2
-plt.plot(lambda_FMM, intensity)
+plt.plot(lambda_FMM, np.squeeze(intensity))
 plt.show()
 
 
