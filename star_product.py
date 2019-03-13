@@ -2,46 +2,50 @@ import numpy as np
 
 
 def starProductanalyt(SIN_1,SIN_2):
-    SIN_1 = np.squeeze(SIN_1)
-    SIN_2 = np.squeeze(SIN_2)
+    print("SIN_1: ", SIN_1.shape)
+    print("SIN_2: ", SIN_2.shape)
+    height = max(SIN_1.shape[0], SIN_2.shape[0])
+
     # S-matrix 1
-    TF1XX = np.squeeze(SIN_1[:,0,0])
-    TF1XY = np.squeeze(SIN_1[:,0,1])
-    RB1XX = np.squeeze(SIN_1[:,0,2])
-    RB1XY = np.squeeze(SIN_1[:,0,3])
-    TF1YX = np.squeeze(SIN_1[:,1,0])
-    TF1YY = np.squeeze(SIN_1[:,1,1])
-    RB1YX = np.squeeze(SIN_1[:,1,2])
-    RB1YY = np.squeeze(SIN_1[:,1,3])
-    RF1XX = np.squeeze(SIN_1[:,2,0])
-    RF1XY = np.squeeze(SIN_1[:,2,1])
-    TB1XX = np.squeeze(SIN_1[:,2,2])
-    TB1XY = np.squeeze(SIN_1[:,2,3])
-    RF1YX = np.squeeze(SIN_1[:,3,0])
-    RF1YY = np.squeeze(SIN_1[:,3,1])
-    TB1YX = np.squeeze(SIN_1[:,3,2])
-    TB1YY = np.squeeze(SIN_1[:,3,3])
+    TF1XX = SIN_1[:,:,0,0]
+    TF1XY = SIN_1[:,:,0,1]
+    RB1XX = SIN_1[:,:,0,2]
+    RB1XY = SIN_1[:,:,0,3]
+    TF1YX = SIN_1[:,:,1,0]
+    TF1YY = SIN_1[:,:,1,1]
+    RB1YX = SIN_1[:,:,1,2]
+    RB1YY = SIN_1[:,:,1,3]
+    RF1XX = SIN_1[:,:,2,0]
+    RF1XY = SIN_1[:,:,2,1]
+    TB1XX = SIN_1[:,:,2,2]
+    TB1XY = SIN_1[:,:,2,3]
+    RF1YX = SIN_1[:,:,3,0]
+    RF1YY = SIN_1[:,:,3,1]
+    TB1YX = SIN_1[:,:,3,2]
+    TB1YY = SIN_1[:,:,3,3]
 
     # S-matrix 2
-    TF2XX = np.squeeze(SIN_2[:,0,0])
-    TF2XY = np.squeeze(SIN_2[:,0,1])
-    RB2XX = np.squeeze(SIN_2[:,0,2])
-    RB2XY = np.squeeze(SIN_2[:,0,3])
-    TF2YX = np.squeeze(SIN_2[:,1,0])
-    TF2YY = np.squeeze(SIN_2[:,1,1])
-    RB2YX = np.squeeze(SIN_2[:,1,2])
-    RB2YY = np.squeeze(SIN_2[:,1,3])
-    RF2XX = np.squeeze(SIN_2[:,2,0])
-    RF2XY = np.squeeze(SIN_2[:,2,1])
-    TB2XX = np.squeeze(SIN_2[:,2,2])
-    TB2XY = np.squeeze(SIN_2[:,2,3])
-    RF2YX = np.squeeze(SIN_2[:,3,0])
-    RF2YY = np.squeeze(SIN_2[:,3,1])
-    TB2YX = np.squeeze(SIN_2[:,3,2])
-    TB2YY = np.squeeze(SIN_2[:,3,3])
+    TF2XX = SIN_2[:,:,0,0]
+    TF2XY = SIN_2[:,:,0,1]
+    RB2XX = SIN_2[:,:,0,2]
+    RB2XY = SIN_2[:,:,0,3]
+    TF2YX = SIN_2[:,:,1,0]
+    TF2YY = SIN_2[:,:,1,1]
+    RB2YX = SIN_2[:,:,1,2]
+    RB2YY = SIN_2[:,:,1,3]
+    RF2XX = SIN_2[:,:,2,0]
+    RF2XY = SIN_2[:,:,2,1]
+    TB2XX = SIN_2[:,:,2,2]
+    TB2XY = SIN_2[:,:,2,3]
+    RF2YX = SIN_2[:,:,3,0]
+    RF2YY = SIN_2[:,:,3,1]
+    TB2YX = SIN_2[:,:,3,2]
+    TB2YY = SIN_2[:,:,3,3]
     # number of wavelengths
-    numwavel = TF1XX.size
-
+    wav_vec_len = TF1XX.shape[1]
+    # declare output matrix
+    SOUT = np.zeros((height,wav_vec_len,4,4)).astype(complex)
+    print("SOUT: ", SOUT.shape)
 
     # Plain analytic form of the staproduct
     TFXX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
@@ -199,24 +203,24 @@ def starProductanalyt(SIN_1,SIN_2):
 
     # Assemble the resulting s-matrix using the elements from above
 
-    SOUT = np.zeros((numwavel,4,4)).astype(complex)
 
-    SOUT[:,0,0] = TFXX
-    SOUT[:,0,1] = TFXY
-    SOUT[:,0,2] = RBXX
-    SOUT[:,0,3] = RBXY
-    SOUT[:,1,0] = TFYX
-    SOUT[:,1,1] = TFYY
-    SOUT[:,1,2] = RBYX
-    SOUT[:,1,3] = RBYY
-    SOUT[:,2,0] = RFXX
-    SOUT[:,2,1] = RFXY
-    SOUT[:,2,2] = TBXX
-    SOUT[:,2,3] = TBXY
-    SOUT[:,3,0] = RFYX
-    SOUT[:,3,1] = RFYY
-    SOUT[:,3,2] = TBYX
-    SOUT[:,3,3] = TBYY
+    print("TFXX: ", TFXX.shape)
+    SOUT[:,:,0,0] = TFXX
+    SOUT[:,:,0,1] = TFXY
+    SOUT[:,:,0,2] = RBXX
+    SOUT[:,:,0,3] = RBXY
+    SOUT[:,:,1,0] = TFYX
+    SOUT[:,:,1,1] = TFYY
+    SOUT[:,:,1,2] = RBYX
+    SOUT[:,:,1,3] = RBYY
+    SOUT[:,:,2,0] = RFXX
+    SOUT[:,:,2,1] = RFXY
+    SOUT[:,:,2,2] = TBXX
+    SOUT[:,:,2,3] = TBXY
+    SOUT[:,:,3,0] = RFYX
+    SOUT[:,:,3,1] = RFYY
+    SOUT[:,:,3,2] = TBYX
+    SOUT[:,:,3,3] = TBYY
 
     return SOUT
 
