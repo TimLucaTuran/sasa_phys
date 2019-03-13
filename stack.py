@@ -3,6 +3,11 @@ from star_product import *
 from smat_oparations import *
 
 class Layer:
+    """
+    Parrent class of Meta- and NonMetaLayer, contains information about
+    which symmetry opperations will be applied.
+    """
+
     def __init__(self):
         self.mirror_bool = False
         self.flip_bool = False
@@ -22,7 +27,7 @@ class Layer:
 
 class MetaLayer(Layer):
     """
-    Object to describe a Meta-Surface in the Stack
+    Class to describe a Meta-Surface in the Stack
 
     Parameters
     ----------
@@ -64,15 +69,21 @@ class NonMetaLayer(Layer):
 
 class Stack:
     """
+    Class to describe the whole Stack, contains information about cladding,
+    substrate and further options.
+
     Parameters
     ----------
     layer_list : list of Layer objects
-    cladding : float / vector
-               The refrectiv Index of the material on top of the stack
+    wav_vec : vector
+              The target wavelengths where the Meta-Surface was simulated/
+              measured
+    cladding : vector
+               The refrectiv indeces of the material on top of the stack,
                if the input is a single float n_i wavelength independent
                behavior will be assumed.
-    substrate : float / vectors
-                The refractiv index of the material below the stack
+    substrate : vectors
+                The refractiv indeces of the material below the stack
 
     """
     def __init__(self, layer_list, wav_vec, cladding, substrate):
@@ -89,7 +100,11 @@ class Stack:
 
         Parameters
         ----------
-        layer: NonMetaLayer or MetaLayer object
+        layer : NonMetaLayer or MetaLayer object
+
+        Returns
+        -------
+        s_mat : Lx4x4 S-Matrix
         """
         if type(layer) is NonMetaLayer:
             #Height is a scalar
@@ -112,22 +127,26 @@ class Stack:
                             NonMetaLayers")
         #apply symmetry opperations
         if layer.mirror_bool:
-            s_mat = array_mirror_smat(s_mat)
+            s_mat = mirror_smat(s_mat)
         if layer.flip_bool:
-            s_mat = array_flip_smat(s_mat)
+            s_mat = flip_smat(s_mat)
         if layer.angle != 0:
-            s_mat = array_rot_smat(s_mat, layer.angle)
+            s_mat = rot_smat(s_mat, layer.angle)
 
         return s_mat
 
     def create_interface(self, l_2, l_1):
         """
         Creates the interface S-Matrix for the transmission
-        between 2 Non-Meta-Layers
+        between two Layers
 
         Parameters
         ----------
         l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+
+        Returns
+        -------
+        s_mat : Lx4x4 S-Matrix
         """
 
         #load n_* from the Layers
@@ -172,17 +191,21 @@ class Stack:
     def create_interface_rot(self, l_2, l_1):
         """
         Creates the interface S-Matrix for the transmission between
-        2 Non-Meta-Layers in case of rotation, uses create_interface
+        two Layers in case of rotation, uses create_interface
 
         Parameters
         ----------
         l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+
+        Returns
+        -------
+        s_mat : Lx4x4 S-Matrix
         """
         vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
-        s_mat = starProductanalyt(array_rot_smat(s_mat1, l_2.angle),
-                                  array_rot_smat(s_mat2, l_1.angle))
+        s_mat = starProductanalyt(rot_smat(s_mat1, l_2.angle),
+                                  rot_smat(s_mat2, l_1.angle))
         return  s_mat
 
 
