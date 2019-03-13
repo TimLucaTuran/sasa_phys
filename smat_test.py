@@ -32,8 +32,8 @@ SMAT_2 = np.squeeze(SMAT_2[H2_ind, RAD_ind, W2_ind, L2_ind, :,:,:])
 print("SMAT_2", SMAT_2[0])
 # Build Stack
 #layer1 = NonMetaLayer(subs_h,n_SiO2)
-layer1 = MetaLayer(s_mat=SMAT_1, n_SiO2, n_SiO2)
-layer2 = NonMetaLayer( H_Sp, n_SiO2)
+layer1 = MetaLayer(SMAT_1, n_SiO2, n_SiO2)
+layer2 = NonMetaLayer( np.array([H_Sp, 2*H_Sp]), n_SiO2)
 
 layer3 = MetaLayer(SMAT_2,n_SiO2,n_SiO2)
 layer3.rotate(35)
@@ -43,7 +43,7 @@ layer_list = [layer1, layer2, layer3, layer4]
 stack1 = Stack(layer_list,lambda_FMM,n_SiO2,n_vac)
 s_out = stack1.build()
 s_out = np.squeeze(s_out)
-print("Ausgabe" , s_out[0])
+print("Ausgabe" , s_out[1,0,:,:])
 
 
 

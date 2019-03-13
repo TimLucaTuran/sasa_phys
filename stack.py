@@ -111,18 +111,17 @@ class Stack:
             if layer.height_len == 1:
                 layer.height = np.array([layer.height])
 
-            s_mat_list = np.zeros((layer.height_len, self.wav_vec_len,4,4)).astype(complex)
+            s_mat = np.zeros((layer.height_len, self.wav_vec_len,4,4)).astype(complex)
             for i in range(layer.height_len):
                 prop_x = np.exp(1j * layer.n_x * layer.height[i] * 2*np.pi /self.wav_vec)
                 prop_y = np.exp(1j * layer.n_y * layer.height[i] * 2*np.pi /self.wav_vec)
-                s_mat_list[i,:,0,0] = prop_x
-                s_mat_list[i,:,1,1] = prop_y
-                s_mat_list[i,:,2,2] = prop_x
-                s_mat_list[i,:,3,3] = prop_y
+                s_mat[i,:,0,0] = prop_x
+                s_mat[i,:,1,1] = prop_y
+                s_mat[i,:,2,2] = prop_x
+                s_mat[i,:,3,3] = prop_y
 
-                s_mat = np.squeeze(s_mat_list)
         elif type(layer) is MetaLayer:
-            s_mat = layer.s_mat
+            s_mat = layer.s_mat.reshape((1,self.wav_vec_len,4,4))
         else:
             raise ValueError("Stack has to consist of Mata and \
                             NonMetaLayers")
@@ -187,7 +186,7 @@ class Stack:
         [-1*R_x, 0   , T_x,  0  ],
         [ 0    ,-1*R_y, 0  , T_y ]
         """
-        return s_mat_list
+        return s_mat_list.reshape((1,self.wav_vec_len,4,4))
 
     def create_interface_rot(self, l_2, l_1):
         """
