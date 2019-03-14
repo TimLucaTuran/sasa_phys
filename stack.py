@@ -27,16 +27,17 @@ class Layer:
 
 class MetaLayer(Layer):
     """
-    Class to describe a Meta-Surface in the Stack
+    Class to describe a Meta-Surface in the Stack.
 
     Parameters
     ----------
     s_mat : L x 4 x 4 numpy Array
-        the Lx4x4 S-Matrix of the Meta-Layer, externally simulated/measured
+            the Lx4x4 S-Matrix of the Meta-Layer, externally simulated/measured
     cladding : vector
-        containing the refraction indices of the cladding
+               containing the refraction indices of the cladding.
+
     substrate : vector
-        containing the refraction indices of the substrate
+                containing the refraction indices of the substrate.
     """
 
     def __init__(self, s_mat, cladding, substrate):
@@ -48,13 +49,13 @@ class MetaLayer(Layer):
 
 class NonMetaLayer(Layer):
     """
-    Class to describe a homogenous isotropic or anisotropic Layer
+    Class to describe a homogenous isotropic or anisotropic Layer.
 
     Parameters
     ----------
     height : height in (μm)
-    n_vec : one or two vactors containing the diffraction indeces
-        if one vector is given homogenous behavior will be assumed
+    n_vec : one or two vactors containing the diffraction indeces.
+            If only one vector is given homogenous behavior will be assumed.
     """
 
     def __init__(self, height, *n_vec):
@@ -74,21 +75,21 @@ class NonMetaLayer(Layer):
 
 class Stack:
     """
-    Class to describe the whole Stack, contains information about cladding,
-    substrate and further options.
+    Class to describe the whole Stack, contains information about the layers,
+    cladding, substrate and further options.
 
     Parameters
     ----------
     layer_list : list of Layer objects
     wav_vec : vector
-        The target wavelengths where the Meta-Surface was simulated/
-        measured
+              The target wavelengths where the Meta-Surfaces were simulated/
+              measured
     cladding : vector
-        The refrectiv indeces of the material on top of the stack,
-        if the input is a single float n_i wavelength independent
-        behavior will be assumed.
-    substrate : vectors
-        The refractiv indeces of the material below the stack
+               The refrectiv indeces of the cladding.
+
+    substrate : vector
+                The refractiv indeces of the substrate. The first material to be
+                hit by light.
 
     """
 
@@ -116,7 +117,7 @@ class Stack:
         Returns
         -------
         s_mat : H x L x 4 x 4 numpy array
-            propagation S-Matrix
+                propagation S-Matrix
 
         """
         if type(layer) is NonMetaLayer:
@@ -146,8 +147,7 @@ class Stack:
 
     def create_interface(self, l_2, l_1):
         """
-        Creates the interface S-Matrix for the transmission
-        between two Layers
+        Creates the interface S-Matrix for the transmission between two Layers
 
         Parameters
         ----------
@@ -224,9 +224,10 @@ class Stack:
 
         Returns
         -------
-        s_mat : Lx4x4 S-matrix describing the whole stack
+        s_mat : Lx4x4 or HxLx4x4 numpy array
+                S-matrix describing the behavior of the whole stack. The
+                dimension is HxLx4x4 when a height vector was given
         """
-
         # Create Layer-Objects for the cladding and substrate
         clad_layer = NonMetaLayer(None, self.cladding)
         subs_layer = NonMetaLayer(None, self.substrate)
@@ -275,7 +276,7 @@ class Stack:
         Returns
         -------
         s_out : H x L x 4 x 4 numpy Array
-            S-Matrix of the order'th series developt
+                S-Matrix of the order'th series developt
         """
         self.geo_bool = True
         previous_smat = 0

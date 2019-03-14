@@ -237,8 +237,8 @@ def star_product_analyt(SIN_1,SIN_2):
 
 def star_product_geometric(SIN_1, SIN_2, order):
     """
-    A version star_product where the [I - a @ b]**-1 term in the star product
-    is developt as a geometric series to the nth order.
+    A version of star_product where the [I - a @ b]**-1 term is developed as
+    a geometric series to the nth order.
 
     Parameters
     ----------
