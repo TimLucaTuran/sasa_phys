@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io
 from stack import *
+import time
+
+
 
 data = scipy.io.loadmat('SASA_example_data.mat')
 
@@ -34,7 +37,7 @@ print("SMAT_2", SMAT_2[0])
 # Build Stack
 #layer1 = NonMetaLayer(subs_h,n_SiO2)
 layer1 = MetaLayer(SMAT_1, n_SiO2, n_SiO2)
-layer2 = NonMetaLayer( np.array([H_Sp, 2*H_Sp]), n_SiO2)
+layer2 = NonMetaLayer( H_Sp, n_SiO2)
 
 layer3 = MetaLayer(SMAT_2,n_SiO2,n_SiO2)
 layer3.rotate(35)
@@ -42,16 +45,19 @@ layer3.rotate(35)
 layer4 = NonMetaLayer(subs_h, n_SiO2)
 layer_list = [layer1, layer2, layer3, layer4]
 stack1 = Stack(layer_list,lambda_FMM,n_SiO2,n_vac)
+t1 = time.perf_counter()
 s_out = stack1.build()
-print("Ausgabe" , s_out[1,0,:,:])
+t2 = time.perf_counter()
+print("Ausgabe" , s_out[0,:,:])
+print("Time in s", t2-t1)
 
 #intensity plot
 index_1 = 2
 index_2 = 2
 
-intensity = np.abs( s_out[0,:, index_1, index_2] )**2 / n_SiO2
-plt.plot(lambda_FMM, np.squeeze(intensity))
-plt.show()
+#intensity = np.abs( s_out[:, index_1, index_2] )**2 / n_SiO2
+#plt.plot(lambda_FMM, np.squeeze(intensity))
+#plt.show()
 
 
 #print(SMAT_2)
