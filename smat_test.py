@@ -37,7 +37,7 @@ print("SMAT_2", SMAT_2[0])
 # Build Stack
 #layer1 = NonMetaLayer(subs_h,n_SiO2)
 layer1 = MetaLayer(SMAT_1, n_SiO2, n_SiO2)
-layer2 = NonMetaLayer( H_Sp, n_SiO2)
+layer2 = NonMetaLayer( np.array([1,2])*H_Sp, n_SiO2)
 
 layer3 = MetaLayer(SMAT_2,n_SiO2,n_SiO2)
 layer3.rotate(35)
@@ -45,10 +45,13 @@ layer3.rotate(35)
 layer4 = NonMetaLayer(subs_h, n_SiO2)
 layer_list = [layer1, layer2, layer3, layer4]
 stack1 = Stack(layer_list,lambda_FMM,n_SiO2,n_vac)
+stack1.geo_bool = True
+stack1.geo_order = 1
 t1 = time.perf_counter()
 s_out = stack1.build()
+#print(stack.order(5))
 t2 = time.perf_counter()
-print("Ausgabe" , s_out[0,:,:])
+print("Ausgabe" , s_out[1,0,:,:])
 print("Time in s", t2-t1)
 
 #intensity plot
