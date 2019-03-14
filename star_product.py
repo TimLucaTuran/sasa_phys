@@ -312,6 +312,7 @@ def star_product_cascaded(smat_list):
     return smat
 
 def star_product_cascaded_geo(smat_list, order):
+
     """
     A version of star_product_cascaded unsing star_product_geometric.
 
@@ -327,13 +328,21 @@ def star_product_cascaded_geo(smat_list, order):
     smat : An L-by-4-by-4 S-matrix.
     """
 
+
     if not type(smat_list) is list:
         raise TypeError("Input has to be a list")
     elif len(smat_list) <= 1:
         raise ValueError("List has to be length 2 or larger")
 
     smat = smat_list[0]
+
     for i in range(1, len(smat_list)):
         smat = star_product_geometric(smat, smat_list[i], order)
+
+    print("current 1", smat_list[0][0])
+    for i in range(1, len(smat_list)):
+        smat = star_product_geometric(smat, smat_list[i], order)
+        print("current: ", i+1 ,"\n", smat_list[i][0])
+        #print("s_mat ", i, ": ", smat_list[i][0] )
 
     return smat
