@@ -72,7 +72,7 @@ def rot_smat(s_mat,ang):
     s_out = Rot_op.T @ s_mat @ Rot_op
     return s_out
 
-def phase_shift(SMAT,ANG):
+def phase_shift(smat,ang):
     """
     Shifting the phase of a given S-Matrix by a given angle
 
@@ -88,7 +88,7 @@ def phase_shift(SMAT,ANG):
     s_out: L x 4 x 4 numpy Array
         shifted S-Matrix
     """
-    smat_arg = np.angle(SMAT)
-    smat_abs = np.abs(SMAT)
-    s_out = smat_abs*np.exp(1j*(smat_arg+ANG))
+    smat_arg = np.angle(smat)
+    smat_abs = np.abs(smat)
+    s_out = smat_abs*np.exp(1j*(smat_arg+ang))
     return s_out
