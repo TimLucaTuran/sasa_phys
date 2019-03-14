@@ -93,6 +93,8 @@ class Stack:
         self.substrate = substrate
         self.wav_vec = wav_vec
         self.wav_vec_len = len(self.wav_vec)
+        self.geo_bool = False
+        self.geo_order = 5
 
     def create_propagator(self, layer):
         """
@@ -107,18 +109,14 @@ class Stack:
         s_mat : Lx4x4 S-Matrix
         """
         if type(layer) is NonMetaLayer:
-            #Height is a scalar
-            if layer.height_len == 1:
-                layer.height = np.array([layer.height])
 
             s_mat = np.zeros((layer.height_len, self.wav_vec_len,4,4)).astype(complex)
-            for i in range(layer.height_len):
-                prop_x = np.exp(1j * layer.n_x * layer.height[i] * 2*np.pi /self.wav_vec)
-                prop_y = np.exp(1j * layer.n_y * layer.height[i] * 2*np.pi /self.wav_vec)
-                s_mat[i,:,0,0] = prop_x
-                s_mat[i,:,1,1] = prop_y
-                s_mat[i,:,2,2] = prop_x
-                s_mat[i,:,3,3] = prop_y
+            prop_x = np.exp(2j*np.pi* np.outer(layer.height, layer.n_x/self.wav_vec).squeeze())
+            prop_y = np.exp(2j*np.pi* np.outer(layer.height, layer.n_y/self.wav_vec).squeeze())
+            s_mat[:,:,0,0] = prop_x
+            s_mat[:,:,1,1] = prop_y
+            s_mat[:,:,2,2] = prop_x
+            s_mat[:,:,3,3] = prop_y
 
         elif type(layer) is MetaLayer:
             s_mat = layer.s_mat.reshape((1,self.wav_vec_len,4,4))
@@ -204,7 +202,7 @@ class Stack:
         vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
-        s_mat = starProductanalyt(rot_smat(s_mat1, l_2.angle),
+        s_mat = star_product_analyt(rot_smat(s_mat1, l_2.angle),
                                   rot_smat(s_mat2, l_1.angle))
         return  s_mat
 
@@ -246,5 +244,8 @@ class Stack:
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         #end building loop
-        s_out = np.squeeze(starProduct_Cascaded(s_mat_list))
+        if self.geo_bool:
+            s_out = star_product_cascaded_geo(s_mat_list, self.geo_order).squeeze()
+        else:
+            s_out = star_product_cascaded(s_mat_list).squeeze()
         return s_out

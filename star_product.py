@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def starProductanalyt(SIN_1,SIN_2):
+def star_product_analyt(SIN_1,SIN_2):
     print("SIN_1: ", SIN_1.shape)
     print("SIN_2: ", SIN_2.shape)
     height = max(SIN_1.shape[0], SIN_2.shape[0])
@@ -224,9 +224,40 @@ def starProductanalyt(SIN_1,SIN_2):
 
     return SOUT
 
+def star_product_geometric(SIN_1, SIN_2, order):
+    TF_1 = SIN_1[:,:,0:2,0:2]
+    TB_1 = SIN_1[:,:,2:4,2:4]
+    RF_1 = SIN_1[:,:,2:4,0:2]
+    RB_1 = SIN_1[:,:,0:2,2:4]
+
+    TF_2 = SIN_2[:,:,0:2,0:2]
+    TB_2 = SIN_2[:,:,2:4,2:4]
+    RF_2 = SIN_2[:,:,2:4,0:2]
+    RB_2 = SIN_2[:,:,0:2,2:4]
+
+    height_vec_len = max(SIN_1.shape[0], SIN_2.shape[0])
+    wav_vec_len = TF_1.shape[1]
+    left_kernel = np.zeros((height_vec_len, wav_vec_len, 2, 2)).astype(complex)
+    right_kernel = np.zeros((height_vec_len, wav_vec_len, 2, 2)).astype(complex)
+
+    for n in range(1,order+1):
+        left_kernel = left_kernel + np.linalg.matrix_power(RB_1 @ RF_2, n)
+        right_kernel = right_kernel + np.linalg.matrix_power(RF_2 @ RB_1, n)
+
+    TF = TF_2 @ TF_1 + TF_2 @ left_kernel @ TF_1
+    TB = TB_1 @ TB_2 + TB_1 @ right_kernel @ TB_2
+    RF = RF_1 + TB_1 @ RF_2 @ TF_1 + TB_1 @ RF_2 @ left_kernel @ TF_1
+    RB = RB_2 + TF_2 @ RB_1 @ TB_2 + TF_2 @ RB_1 @ right_kernel @ TB_2
+
+    s_out = np.zeros((height_vec_len, wav_vec_len, 4, 4)).astype(complex)
+    s_out[:,:,0:2,0:2] = TF
+    s_out[:,:,2:4,2:4] = TB
+    s_out[:,:,2:4,0:2] = RF
+    s_out[:,:,0:2,2:4] = RB
+    return s_out
 
 
-def starProduct_Cascaded(SMAT_LIST):
+def star_product_cascaded(SMAT_LIST):
     """
      Iteratively calculates the starproduct (Li, 1996) of N S-matrices, where
      N >= 2. The iteration goes the through the starproduct pair-wise, so
@@ -253,7 +284,23 @@ def starProduct_Cascaded(SMAT_LIST):
     StarMat = SMAT_LIST[0]
     print("current 1", SMAT_LIST[0][0])
     for i in range(1, len(SMAT_LIST)):
-        StarMat = starProductanalyt(StarMat, SMAT_LIST[i])
+        StarMat = star_product_analyt(StarMat, SMAT_LIST[i])
+        print("current: ", i+1 ,"\n", SMAT_LIST[i][0])
+        #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
+
+    return StarMat
+
+def star_product_cascaded_geo(SMAT_LIST, order):
+
+    if not type(SMAT_LIST) is list:
+        raise TypeError("Input has to be a list")
+    elif len(SMAT_LIST) <= 1:
+        raise ValueError("List has to be length 2 or larger")
+
+    StarMat = SMAT_LIST[0]
+    print("current 1", SMAT_LIST[0][0])
+    for i in range(1, len(SMAT_LIST)):
+        StarMat = star_product_geometric(StarMat, SMAT_LIST[i], order)
         print("current: ", i+1 ,"\n", SMAT_LIST[i][0])
         #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
 
