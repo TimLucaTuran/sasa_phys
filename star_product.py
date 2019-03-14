@@ -2,9 +2,23 @@ import numpy as np
 
 
 def star_product_analyt(SIN_1,SIN_2):
-    print("SIN_1: ", SIN_1.shape)
-    print("SIN_2: ", SIN_2.shape)
-    height = max(SIN_1.shape[0], SIN_2.shape[0])
+    """
+    Calculate Lifeng Li's starproduct for two S-matrices SIN_1 and SIN_2,
+    such that S = S1 * S2. The starproduct between two arbitrary S-matrices
+    was precalculated analytically with Mathematica.
+
+    Parameters
+    ----------
+    SIN_1, SIN_2 : HxLx4x4 numpy array
+                   H is height_vec_len, the dimension of the height vector
+                   given to the layer object. (Most of the time equal to 1)
+                   L is wav_vec_len the number of measured wavelengths
+
+    Returns
+    -------
+    s_out : HxLx4x4 numpy array
+    """
+    height_vec_len = max(SIN_1.shape[0], SIN_2.shape[0])
 
     # S-matrix 1
     TF1XX = SIN_1[:,:,0,0]
@@ -44,8 +58,7 @@ def star_product_analyt(SIN_1,SIN_2):
     # number of wavelengths
     wav_vec_len = TF1XX.shape[1]
     # declare output matrix
-    SOUT = np.zeros((height,wav_vec_len,4,4)).astype(complex)
-    print("SOUT: ", SOUT.shape)
+    SOUT = np.zeros((height_vec_len,wav_vec_len,4,4)).astype(complex)
 
     # Plain analytic form of the staproduct
     TFXX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
@@ -203,8 +216,6 @@ def star_product_analyt(SIN_1,SIN_2):
 
     # Assemble the resulting s-matrix using the elements from above
 
-
-    print("TFXX: ", TFXX.shape)
     SOUT[:,:,0,0] = TFXX
     SOUT[:,:,0,1] = TFXY
     SOUT[:,:,0,2] = RBXX
@@ -225,6 +236,23 @@ def star_product_analyt(SIN_1,SIN_2):
     return SOUT
 
 def star_product_geometric(SIN_1, SIN_2, order):
+    """
+    A version of star_product where the [I - a @ b]**-1 term is developed as
+    a geometric series to the nth order.
+
+    Parameters
+    ----------
+    SIN_1, SIN_2 : HxLx4x4 numpy array
+                   H is height_vec_len, the dimension of the height vector
+                   given to the layer object. (Most of the time equal to 1)
+                   L is wav_vec_len the number of measured wavelengths
+
+    order : int
+
+    Returns
+    -------
+    s_out : HxLx4x4 numpy array
+    """
     TF_1 = SIN_1[:,:,0:2,0:2]
     TB_1 = SIN_1[:,:,2:4,2:4]
     RF_1 = SIN_1[:,:,2:4,0:2]
@@ -257,51 +285,64 @@ def star_product_geometric(SIN_1, SIN_2, order):
     return s_out
 
 
-def star_product_cascaded(SMAT_LIST):
+def star_product_cascaded(smat_list):
     """
-     Iteratively calculates the starproduct (Li, 1996) of N S-matrices, where
-     N >= 2. The iteration goes the through the starproduct pair-wise, so
-     that: S = ((((((S1 * S2) * S3) * S4) * ... ) * Sn-1) * Sn).
+    Iteratively calculates the starproduct (Li, 1996) of N S-matrices, where
+    N >= 2. The iteration goes the through the starproduct pair-wise, so
+    that: S = ((((((S1 * S2) * S3) * S4) * ... ) * Sn-1) * Sn).
 
-     Usage: StarMat = starProduct_Cascaded( SMAT_LIST )
+    Parameters
+    ----------
+    smat_list : list
+                A list containing N HxLx4x4 S-matrices
 
-     SMAT_LISt: An 1-by-N list containing N L-by-4-by-4 S-matrices,
-                whith N >= 2 and where L denotes the number of sampled
-                wavelengths. Make sure that L is exactly the same in each
-                S-matrix, otherwise starProductanalyt throws an error.
-
-     Output: An L-by-4-by-4 S-matrix.
-
-     Note: On some machines (those with the capability of parallel
-           computation) a recursive approach that computes the starproduct
-           pair-wise might be more efficient.
+    Returns
+    -------
+    smat : HxLx4x4 numpy array
     """
-    if not type(SMAT_LIST) is list:
+    if not type(smat_list) is list:
         raise TypeError("Input has to be a list")
-    elif len(SMAT_LIST) <= 1:
+    elif len(smat_list) <= 1:
         raise ValueError("List has to be length 2 or larger")
 
-    StarMat = SMAT_LIST[0]
-    print("current 1", SMAT_LIST[0][0])
-    for i in range(1, len(SMAT_LIST)):
-        StarMat = star_product_analyt(StarMat, SMAT_LIST[i])
-        print("current: ", i+1 ,"\n", SMAT_LIST[i][0])
-        #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
+    smat = smat_list[0]
+    for i in range(1, len(smat_list)):
+        smat = star_product_analyt(smat, smat_list[i])
 
-    return StarMat
+    return smat
 
-def star_product_cascaded_geo(SMAT_LIST, order):
+def star_product_cascaded_geo(smat_list, order):
 
-    if not type(SMAT_LIST) is list:
+    """
+    A version of star_product_cascaded unsing star_product_geometric.
+
+    Parameters
+    ----------
+    smat_list : list
+                A list containing N HxLx4x4 S-matrices
+
+    order : int
+
+    Returns
+    -------
+    smat : An L-by-4-by-4 S-matrix.
+    """
+
+
+    if not type(smat_list) is list:
         raise TypeError("Input has to be a list")
-    elif len(SMAT_LIST) <= 1:
+    elif len(smat_list) <= 1:
         raise ValueError("List has to be length 2 or larger")
 
-    StarMat = SMAT_LIST[0]
-    print("current 1", SMAT_LIST[0][0])
-    for i in range(1, len(SMAT_LIST)):
-        StarMat = star_product_geometric(StarMat, SMAT_LIST[i], order)
-        print("current: ", i+1 ,"\n", SMAT_LIST[i][0])
-        #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
+    smat = smat_list[0]
 
-    return StarMat
+    for i in range(1, len(smat_list)):
+        smat = star_product_geometric(smat, smat_list[i], order)
+
+    print("current 1", smat_list[0][0])
+    for i in range(1, len(smat_list)):
+        smat = star_product_geometric(smat, smat_list[i], order)
+        print("current: ", i+1 ,"\n", smat_list[i][0])
+        #print("s_mat ", i, ": ", smat_list[i][0] )
+
+    return smat
