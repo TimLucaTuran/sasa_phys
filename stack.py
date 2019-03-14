@@ -31,9 +31,12 @@ class MetaLayer(Layer):
 
     Parameters
     ----------
-    s_mat : the 4x4 S-Matrix of the Meta-Layer, externally simulated/measured
-    cladding : vector containing the refraction indices of the cladding
-    substrate : vector containing the refraction indices of the substrate
+    s_mat : L x 4 x 4 numpy Array
+        the Lx4x4 S-Matrix of the Meta-Layer, externally simulated/measured
+    cladding : vector
+        containing the refraction indices of the cladding
+    substrate : vector
+        containing the refraction indices of the substrate
     """
 
     def __init__(self, s_mat, cladding, substrate):
@@ -51,7 +54,7 @@ class NonMetaLayer(Layer):
     ----------
     height : height in (μm)
     n_vec : one or two vactors containing the diffraction indeces
-            if one vector is given homogenous behavior will be assumed
+        if one vector is given homogenous behavior will be assumed
     """
 
     def __init__(self, height, *n_vec):
@@ -78,14 +81,14 @@ class Stack:
     ----------
     layer_list : list of Layer objects
     wav_vec : vector
-              The target wavelengths where the Meta-Surface was simulated/
-              measured
+        The target wavelengths where the Meta-Surface was simulated/
+        measured
     cladding : vector
-               The refrectiv indeces of the material on top of the stack,
-               if the input is a single float n_i wavelength independent
-               behavior will be assumed.
+        The refrectiv indeces of the material on top of the stack,
+        if the input is a single float n_i wavelength independent
+        behavior will be assumed.
     substrate : vectors
-                The refractiv indeces of the material below the stack
+        The refractiv indeces of the material below the stack
 
     """
 
@@ -104,7 +107,7 @@ class Stack:
 
     def create_propagator(self, layer):
         """
-        Creates the propergator S-Matrix
+        Creates the propagator S-Matrix
 
         Parameters
         ----------
@@ -112,7 +115,9 @@ class Stack:
 
         Returns
         -------
-        s_mat : Lx4x4 S-Matrix
+        s_mat : H x L x 4 x 4 numpy array
+            propagation S-Matrix
+
         """
         if type(layer) is NonMetaLayer:
 
@@ -150,7 +155,8 @@ class Stack:
 
         Returns
         -------
-        s_mat : Lx4x4 S-Matrix
+        s_mat : L x 4 x 4 numpy array
+            interface S-Matrix
         """
 
         # load n_* from the Layers
@@ -266,6 +272,11 @@ class Stack:
         Parameters
         ----------
         order : int
+
+        Returns
+        -------
+        s_out : H x L x 4 x 4 numpy Array
+            S-Matrix of the order'th series developt
         """
         self.geo_bool = True
         previous_smat = 0
@@ -276,5 +287,6 @@ class Stack:
         # calculate current S-matrix
         self.geo_order = order
         current_smat = self.build()
+        s_out = current_smat - previous_smat
 
-        return current_smat - previous_smat
+        return s_out
