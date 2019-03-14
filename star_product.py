@@ -290,18 +290,18 @@ def star_product_cascaded(SMAT_LIST):
 
     return StarMat
 
-def star_product_cascaded_geo(SMAT_LIST, order):
+def star_product_cascaded_geo(smat_list, order):
 
-    if not type(SMAT_LIST) is list:
+    if not type(smat_list) is list:
         raise TypeError("Input has to be a list")
-    elif len(SMAT_LIST) <= 1:
+    elif len(smat_list) <= 1:
         raise ValueError("List has to be length 2 or larger")
 
-    StarMat = SMAT_LIST[0]
-    print("current 1", SMAT_LIST[0][0])
-    for i in range(1, len(SMAT_LIST)):
-        StarMat = star_product_geometric(StarMat, SMAT_LIST[i], order)
-        print("current: ", i+1 ,"\n", SMAT_LIST[i][0])
-        #print("s_mat ", i, ": ", SMAT_LIST[i][0] )
+    smat = smat_list[0]
+    print("current 1", smat_list[0][0])
+    for i in range(1, len(smat_list)):
+        smat = star_product_geometric(smat, smat_list[i], order)
+        print("current: ", i+1 ,"\n", smat_list[i][0])
+        #print("s_mat ", i, ": ", smat_list[i][0] )
 
-    return StarMat
+    return smat
