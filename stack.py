@@ -255,7 +255,6 @@ class Stack:
 
         #remove subs_layer from the layer list
         del self.layer_list[-1]
-        print(self.layer_list)
         return s_out
 
     def order(self, order):
