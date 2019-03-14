@@ -2,13 +2,13 @@ import numpy as np
 
 def mirror_smat(s_mat):
     """
-    Mirror a given S-Matrix 
-    
+    Mirror a given S-Matrix
+
     Parameters
     ----------
-    s_mat: L x 4 x 4 numpy Array 
+    s_mat: L x 4 x 4 numpy Array
         S-Matrix
-        
+
     Returns
     -------
     s_out: L x 4 x 4 numpy Array
@@ -24,12 +24,12 @@ def mirror_smat(s_mat):
 def flip_smat(s_mat):
     """
     Flip a given S-Matrix
-    
+
     Parameters
     ----------
-    s_mat: L x 4 x 4 numpy Array 
+    s_mat: L x 4 x 4 numpy Array
         S-Matrix
-    
+
     Returns
     -------
     s_out: L x 4 x 4 numpy Array
@@ -44,14 +44,14 @@ def flip_smat(s_mat):
 def rot_smat(s_mat,ang):
     """
     Rotate a given S-Matrix by a given angle
-    
+
     Parameters
     ----------
-    s_mat: L x 4 x 4 numpy Array 
+    s_mat: L x 4 x 4 numpy Array
         S-Matrix
     ang: float
         rotaion angle in rad
-    
+
     Returns
     -------
     s_out: L x 4 x 4 numpy Array
@@ -75,14 +75,14 @@ def rot_smat(s_mat,ang):
 def phase_shift(SMAT,ANG):
     """
     Shifting the phase of a given S-Matrix by a given angle
-    
+
     Parameters
     ----------
-    s_mat: L x 4 x 4 numpy Array 
+    s_mat: L x 4 x 4 numpy Array
         S-Matrix
     ang: float
         rotaion angle in rad
-    
+
     Returns
     -------
     s_out: L x 4 x 4 numpy Array
