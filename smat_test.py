@@ -45,22 +45,22 @@ layer3.rotate(35)
 layer4 = NonMetaLayer(subs_h, n_SiO2)
 layer_list = [layer1, layer2, layer3, layer4]
 stack1 = Stack(layer_list,lambda_FMM,n_SiO2,n_vac)
-stack1.geo_bool = True
-stack1.geo_order = 1
+stack1.geo_on()
+stack1.geo_order=5
 t1 = time.perf_counter()
 s_out = stack1.build()
-#print(stack.order(5))
 t2 = time.perf_counter()
-print("Ausgabe" , s_out[1,0,:,:])
+print("Ausgabe" , s_out[0,0,:,:])
 print("Time in s", t2-t1)
-
+"""
 #intensity plot
 index_1 = 2
 index_2 = 2
 
-#intensity = np.abs( s_out[:, index_1, index_2] )**2 / n_SiO2
-#plt.plot(lambda_FMM, np.squeeze(intensity))
-#plt.show()
+intensity = np.abs( s_out[0,:, index_1, index_2] )**2 / n_SiO2
+plt.plot(lambda_FMM, np.squeeze(intensity))
+plt.show()
 
 
 #print(SMAT_2)
+"""

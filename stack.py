@@ -96,6 +96,9 @@ class Stack:
         self.geo_bool = False
         self.geo_order = 5
 
+    def geo_on(self):
+        self.geo_bool = True
+
     def create_propagator(self, layer):
         """
         Creates the propergator S-Matrix
@@ -217,6 +220,7 @@ class Stack:
         s_mat : Lx4x4 S-matrix describing the whole stack
         """
 
+
         #Create Layer-Objects for the cladding and substrate
         clad_layer = NonMetaLayer(None, self.cladding)
         subs_layer = NonMetaLayer(None, self.substrate)
@@ -248,4 +252,29 @@ class Stack:
             s_out = star_product_cascaded_geo(s_mat_list, self.geo_order).squeeze()
         else:
             s_out = star_product_cascaded(s_mat_list).squeeze()
+
+        #remove subs_layer from the layer list
+        del self.layer_list[-1]
+        print(self.layer_list)
         return s_out
+
+    def order(self, order):
+        """
+        Returns the nth order S-Matrix of the starproduct developt via the
+        geometric series.
+
+        Parameters
+        ----------
+        order : int
+        """
+        self.geo_bool = True
+        previous_smat = 0
+        if order > 1:
+            #calculate previous S-matrix
+            self.geo_order = order - 1
+            previous_smat = self.build()
+        #calculate current S-matrix
+        self.geo_order = order
+        current_smat = self.build()
+
+        return current_smat - previous_smat
