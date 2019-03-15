@@ -339,10 +339,5 @@ def star_product_cascaded_geo(smat_list, order):
     for i in range(1, len(smat_list)):
         smat = star_product_geometric(smat, smat_list[i], order)
 
-    print("current 1", smat_list[0][0])
-    for i in range(1, len(smat_list)):
-        smat = star_product_geometric(smat, smat_list[i], order)
-        print("current: ", i+1 ,"\n", smat_list[i][0])
-        #print("s_mat ", i, ": ", smat_list[i][0] )
 
     return smat
