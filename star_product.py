@@ -3,7 +3,7 @@ from numba import jit
 
 
 
-#@jit(nopython = True)
+@jit(nopython = True)
 def star_product_analyt(s_in1, s_in2, s_out, H, L):
     """
     Calculate Lifeng Li's starproduct for two S-matrices SIN_1 and SIN_2,
@@ -76,7 +76,7 @@ def star_product_analyt(s_in1, s_in2, s_out, H, L):
             s_out[h,l,2:4,0:2] = RF
             s_out[h,l,0:2,2:4] = RB
 
-            return
+    return
 
 def star_product(s_in1, s_in2):
     """

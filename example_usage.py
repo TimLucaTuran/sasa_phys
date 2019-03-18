@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
 from time import perf_counter
+import cProfile
 
 # Load S-matrices of externally simulated/measured Metasurface
 #------------------------------------------------------------------------
@@ -46,7 +47,7 @@ meta1 = MetaLayer(s_mat = s_mat_1,
 
 sp_h = 350 / 1000
 spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
-                      height = sp_h) # anisotropic behavior
+                      height = sp_h) # anisotropic behavior *np.ones(1000)
 
 
 
@@ -69,10 +70,11 @@ meta2.rotate(35) #in deg
 
 # calculate the s-matrix describing the whole stack
 t1 = perf_counter()
-s_out = stack.build()
+s_out = cProfile.run("stack.build()")
 t2 = perf_counter()
 print("Execution time: ", t2-t1)
-print(s_out[0,:,:])
+print(s_out.shape)
+print(s_out[1])
 print("sum", np.sum(s_out))
 # plot the results
 intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
