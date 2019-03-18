@@ -21,219 +21,33 @@ def star_product_analyt(SIN_1,SIN_2):
     height_vec_len = max(SIN_1.shape[0], SIN_2.shape[0])
 
     # S-matrix 1
-    TF1XX = SIN_1[:,:,0,0]
-    TF1XY = SIN_1[:,:,0,1]
-    RB1XX = SIN_1[:,:,0,2]
-    RB1XY = SIN_1[:,:,0,3]
-    TF1YX = SIN_1[:,:,1,0]
-    TF1YY = SIN_1[:,:,1,1]
-    RB1YX = SIN_1[:,:,1,2]
-    RB1YY = SIN_1[:,:,1,3]
-    RF1XX = SIN_1[:,:,2,0]
-    RF1XY = SIN_1[:,:,2,1]
-    TB1XX = SIN_1[:,:,2,2]
-    TB1XY = SIN_1[:,:,2,3]
-    RF1YX = SIN_1[:,:,3,0]
-    RF1YY = SIN_1[:,:,3,1]
-    TB1YX = SIN_1[:,:,3,2]
-    TB1YY = SIN_1[:,:,3,3]
-
+    TF_1 = SIN_1[:,:,0:2,0:2]
+    TB_1 = SIN_1[:,:,2:4,2:4]
+    RF_1 = SIN_1[:,:,2:4,0:2]
+    RB_1 = SIN_1[:,:,0:2,2:4]
     # S-matrix 2
-    TF2XX = SIN_2[:,:,0,0]
-    TF2XY = SIN_2[:,:,0,1]
-    RB2XX = SIN_2[:,:,0,2]
-    RB2XY = SIN_2[:,:,0,3]
-    TF2YX = SIN_2[:,:,1,0]
-    TF2YY = SIN_2[:,:,1,1]
-    RB2YX = SIN_2[:,:,1,2]
-    RB2YY = SIN_2[:,:,1,3]
-    RF2XX = SIN_2[:,:,2,0]
-    RF2XY = SIN_2[:,:,2,1]
-    TB2XX = SIN_2[:,:,2,2]
-    TB2XY = SIN_2[:,:,2,3]
-    RF2YX = SIN_2[:,:,3,0]
-    RF2YY = SIN_2[:,:,3,1]
-    TB2YX = SIN_2[:,:,3,2]
-    TB2YY = SIN_2[:,:,3,3]
+    TF_2 = SIN_2[:,:,0:2,0:2]
+    TB_2 = SIN_2[:,:,2:4,2:4]
+    RF_2 = SIN_2[:,:,2:4,0:2]
+    RB_2 = SIN_2[:,:,0:2,2:4]
     # number of wavelengths
-    wav_vec_len = TF1XX.shape[1]
+    wav_vec_len = TF_1.shape[1]
     # declare output matrix
-    SOUT = np.zeros((height_vec_len,wav_vec_len,4,4)).astype(complex)
+    s_out = np.zeros((height_vec_len,wav_vec_len,4,4)).astype(complex)
 
-    # Plain analytic form of the staproduct
-    TFXX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TF1YX*(RB1XX*RF2XY*TF2XX+
-        RB1XY*RF2YY*TF2XX+TF2XY+(-1)*RB1XX*RF2XX*TF2XY+(-1)*RB1XY*
-        RF2YX*TF2XY)+TF1XX*(TF2XX+(-1)*RB1YX*RF2XY*TF2XX+(-1)*
-        RB1YY*RF2YY*TF2XX+RB1YX*RF2XX*TF2XY+RB1YY*RF2YX*TF2XY))
-    # -------------------------------------------------------------------------
-    TFXY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TF1YY*(RB1XX*RF2XY*TF2XX+
-        RB1XY*RF2YY*TF2XX+TF2XY+(-1)*RB1XX*RF2XX*TF2XY+(-1)*RB1XY*
-        RF2YX*TF2XY)+TF1XY*(TF2XX+(-1)*RB1YX*RF2XY*TF2XX+(-1)*
-        RB1YY*RF2YY*TF2XX+RB1YX*RF2XX*TF2XY+RB1YY*RF2YX*TF2XY))
-    # -------------------------------------------------------------------------
-    TFYX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TF1YX*(RB1XX*RF2XY*TF2YX+
-        RB1XY*RF2YY*TF2YX+TF2YY+(-1)*RB1XX*RF2XX*TF2YY+(-1)*RB1XY*
-        RF2YX*TF2YY)+TF1XX*(TF2YX+(-1)*RB1YX*RF2XY*TF2YX+(-1)*
-        RB1YY*RF2YY*TF2YX+RB1YX*RF2XX*TF2YY+RB1YY*RF2YX*TF2YY))
-    # -------------------------------------------------------------------------
-    TFYY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TF1YY*(RB1XX*RF2XY*TF2YX+
-        RB1XY*RF2YY*TF2YX+TF2YY+(-1)*RB1XX*RF2XX*TF2YY+(-1)*RB1XY*
-        RF2YX*TF2YY)+TF1XY*(TF2YX+(-1)*RB1YX*RF2XY*TF2YX+(-1)*
-        RB1YY*RF2YY*TF2YX+RB1YX*RF2XX*TF2YY+RB1YY*RF2YX*TF2YY))
-    # -------------------------------------------------------------------------
-    RBXX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RB2XX*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1XY*RB1YX*RF2YY*TB2XX*TF2XX+RB1XY*TB2YX*TF2XX+(-1)
-        *RB1XY*RB1YX*RF2XY*TB2YX*TF2XX+RB1YX*TB2XX*TF2XY+(-1)*
-        RB1XY*RB1YX*RF2YX*TB2XX*TF2XY+RB1YY*TB2YX*TF2XY+RB1XY*
-        RB1YX*RF2XX*TB2YX*TF2XY+RB1XX*(RB1YY*TB2YX*(RF2XY*TF2XX+(
-        -1)*RF2XX*TF2XY)+TB2XX*(TF2XX+(-1)*RB1YY*RF2YY*TF2XX+RB1YY*
-        RF2YX*TF2XY)))
-    # -------------------------------------------------------------------------
-    RBXY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RB2XY*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1XY*RB1YX*RF2YY*TB2XY*TF2XX+RB1XY*TB2YY*TF2XX+(-1)
-        *RB1XY*RB1YX*RF2XY*TB2YY*TF2XX+RB1YX*TB2XY*TF2XY+(-1)*
-        RB1XY*RB1YX*RF2YX*TB2XY*TF2XY+RB1YY*TB2YY*TF2XY+RB1XY*
-        RB1YX*RF2XX*TB2YY*TF2XY+RB1XX*(RB1YY*TB2YY*(RF2XY*TF2XX+(
-        -1)*RF2XX*TF2XY)+TB2XY*(TF2XX+(-1)*RB1YY*RF2YY*TF2XX+RB1YY*
-        RF2YX*TF2XY)))
-    # -------------------------------------------------------------------------
-    RBYX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RB2YX*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1XY*RB1YX*RF2YY*TB2XX*TF2YX+RB1XY*TB2YX*TF2YX+(-1)
-        *RB1XY*RB1YX*RF2XY*TB2YX*TF2YX+RB1YX*TB2XX*TF2YY+(-1)*
-        RB1XY*RB1YX*RF2YX*TB2XX*TF2YY+RB1YY*TB2YX*TF2YY+RB1XY*
-        RB1YX*RF2XX*TB2YX*TF2YY+RB1XX*(RB1YY*TB2YX*(RF2XY*TF2YX+(
-        -1)*RF2XX*TF2YY)+TB2XX*(TF2YX+(-1)*RB1YY*RF2YY*TF2YX+RB1YY*
-        RF2YX*TF2YY)))
-    # -------------------------------------------------------------------------
-    RBYY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RB2YY*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1XY*RB1YX*RF2YY*TB2XY*TF2YX+RB1XY*TB2YY*TF2YX+(-1)
-        *RB1XY*RB1YX*RF2XY*TB2YY*TF2YX+RB1YX*TB2XY*TF2YY+(-1)*
-        RB1XY*RB1YX*RF2YX*TB2XY*TF2YY+RB1YY*TB2YY*TF2YY+RB1XY*
-        RB1YX*RF2XX*TB2YY*TF2YY+RB1XX*(RB1YY*TB2YY*(RF2XY*TF2YX+(
-        -1)*RF2XX*TF2YY)+TB2XY*(TF2YX+(-1)*RB1YY*RF2YY*TF2YX+RB1YY*
-        RF2YX*TF2YY)))
-    # -------------------------------------------------------------------------
-    RFXX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RF1XX*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1YY*RF2XY*RF2YX*TB1XX*TF1XX+RF2YX*TB1XY*TF1XX+(-1)
-        *RB1YX*RF2XY*RF2YX*TB1XY*TF1XX+RF2XY*TB1XX*TF1YX+(-1)*
-        RB1XY*RF2XY*RF2YX*TB1XX*TF1YX+RB1XX*RF2XY*RF2YX*TB1XY*
-        TF1YX+RF2YY*TB1XY*TF1YX+RF2XX*(RF2YY*TB1XY*(RB1YX*TF1XX+(-1)
-        *RB1XX*TF1YX)+TB1XX*(TF1XX+(-1)*RB1YY*RF2YY*TF1XX+RB1XY*
-        RF2YY*TF1YX)))
-    # -------------------------------------------------------------------------
-    RFXY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RF1XY*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1YY*RF2XY*RF2YX*TB1XX*TF1XY+RF2YX*TB1XY*TF1XY+(-1)
-        *RB1YX*RF2XY*RF2YX*TB1XY*TF1XY+RF2XY*TB1XX*TF1YY+(-1)*
-        RB1XY*RF2XY*RF2YX*TB1XX*TF1YY+RB1XX*RF2XY*RF2YX*TB1XY*
-        TF1YY+RF2YY*TB1XY*TF1YY+RF2XX*(RF2YY*TB1XY*(RB1YX*TF1XY+(-1)
-        *RB1XX*TF1YY)+TB1XX*(TF1XY+(-1)*RB1YY*RF2YY*TF1XY+RB1XY*
-        RF2YY*TF1YY)))
-    # -------------------------------------------------------------------------
-    RFYX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RF1YX*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1YY*RF2XY*RF2YX*TB1YX*TF1XX+RF2YX*TB1YY*TF1XX+(-1)
-        *RB1YX*RF2XY*RF2YX*TB1YY*TF1XX+RF2XY*TB1YX*TF1YX+(-1)*
-        RB1XY*RF2XY*RF2YX*TB1YX*TF1YX+RB1XX*RF2XY*RF2YX*TB1YY*
-        TF1YX+RF2YY*TB1YY*TF1YX+RF2XX*(RF2YY*TB1YY*(RB1YX*TF1XX+(-1)
-        *RB1XX*TF1YX)+TB1YX*(TF1XX+(-1)*RB1YY*RF2YY*TF1XX+RB1XY*
-        RF2YY*TF1YX)))
-    # -------------------------------------------------------------------------
-    RFYY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(RF1YY*(((-1)+RB1YX*RF2XY)*
-        ((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+RB1YY*RF2XY*RF2YX)+
-        RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+RB1XY*RB1YX*RF2XX)*
-        RF2YY)+RB1YY*RF2XY*RF2YX*TB1YX*TF1XY+RF2YX*TB1YY*TF1XY+(-1)
-        *RB1YX*RF2XY*RF2YX*TB1YY*TF1XY+RF2XY*TB1YX*TF1YY+(-1)*
-        RB1XY*RF2XY*RF2YX*TB1YX*TF1YY+RB1XX*RF2XY*RF2YX*TB1YY*
-        TF1YY+RF2YY*TB1YY*TF1YY+RF2XX*(RF2YY*TB1YY*(RB1YX*TF1XY+(-1)
-        *RB1XX*TF1YY)+TB1YX*(TF1XY+(-1)*RB1YY*RF2YY*TF1XY+RB1XY*
-        RF2YY*TF1YY)))
-    # -------------------------------------------------------------------------
-    TBXX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TB1XY*(RB1XX*RF2YX*TB2XX+
-        RB1YX*RF2YY*TB2XX+TB2YX+(-1)*RB1XX*RF2XX*TB2YX+(-1)*RB1YX*
-        RF2XY*TB2YX)+TB1XX*(TB2XX+(-1)*RB1XY*RF2YX*TB2XX+(-1)*
-        RB1YY*RF2YY*TB2XX+RB1XY*RF2XX*TB2YX+RB1YY*RF2XY*TB2YX))
-    # -------------------------------------------------------------------------
-    TBXY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TB1XY*(RB1XX*RF2YX*TB2XY+
-        RB1YX*RF2YY*TB2XY+TB2YY+(-1)*RB1XX*RF2XX*TB2YY+(-1)*RB1YX*
-        RF2XY*TB2YY)+TB1XX*(TB2XY+(-1)*RB1XY*RF2YX*TB2XY+(-1)*
-        RB1YY*RF2YY*TB2XY+RB1XY*RF2XX*TB2YY+RB1YY*RF2XY*TB2YY))
-    # -------------------------------------------------------------------------
-    TBYX = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TB1YY*(RB1XX*RF2YX*TB2XX+
-        RB1YX*RF2YY*TB2XX+TB2YX+(-1)*RB1XX*RF2XX*TB2YX+(-1)*RB1YX*
-        RF2XY*TB2YX)+TB1YX*(TB2XX+(-1)*RB1XY*RF2YX*TB2XX+(-1)*
-        RB1YY*RF2YY*TB2XX+RB1XY*RF2XX*TB2YX+RB1YY*RF2XY*TB2YX))
-    # -------------------------------------------------------------------------
-    TBYY = (((-1)+RB1YX*RF2XY)*((-1)+RB1XY*RF2YX)+(-1)*RB1XX*(RF2XX+
-        RB1YY*RF2XY*RF2YX)+RB1XX*RB1YY*RF2XX*RF2YY+(-1)*(RB1YY+
-        RB1XY*RB1YX*RF2XX)*RF2YY)**(-1)*(TB1YY*(RB1XX*RF2YX*TB2XY+
-        RB1YX*RF2YY*TB2XY+TB2YY+(-1)*RB1XX*RF2XX*TB2YY+(-1)*RB1YX*
-        RF2XY*TB2YY)+TB1YX*(TB2XY+(-1)*RB1XY*RF2YX*TB2XY+(-1)*
-        RB1YY*RF2YY*TB2XY+RB1XY*RF2XX*TB2YY+RB1YY*RF2XY*TB2YY))
+    left_kernel = np.linalg.inv(np.eye(2) - RB_1 @ RF_2)
+    right_kernel = np.linalg.inv(np.eye(2) - RF_2 @ RB_1)
 
-
+    TF = TF_2 @ left_kernel @ TF_1
+    TB = TB_1 @ right_kernel @ TB_2
+    RF = RF_1 + TB_1 @ RF_2 @ left_kernel @ TF_1
+    RB = RB_2 + TF_2 @ RB_1 @ right_kernel @ TB_2
     # Assemble the resulting s-matrix using the elements from above
-
-    SOUT[:,:,0,0] = TFXX
-    SOUT[:,:,0,1] = TFXY
-    SOUT[:,:,0,2] = RBXX
-    SOUT[:,:,0,3] = RBXY
-    SOUT[:,:,1,0] = TFYX
-    SOUT[:,:,1,1] = TFYY
-    SOUT[:,:,1,2] = RBYX
-    SOUT[:,:,1,3] = RBYY
-    SOUT[:,:,2,0] = RFXX
-    SOUT[:,:,2,1] = RFXY
-    SOUT[:,:,2,2] = TBXX
-    SOUT[:,:,2,3] = TBXY
-    SOUT[:,:,3,0] = RFYX
-    SOUT[:,:,3,1] = RFYY
-    SOUT[:,:,3,2] = TBYX
-    SOUT[:,:,3,3] = TBYY
-
-    return SOUT
+    s_out[:,:,0:2,0:2] = TF
+    s_out[:,:,2:4,2:4] = TB
+    s_out[:,:,2:4,0:2] = RF
+    s_out[:,:,0:2,2:4] = RB
+    return s_out
 
 def star_product_geometric(SIN_1, SIN_2, order):
     """
@@ -339,10 +153,5 @@ def star_product_cascaded_geo(smat_list, order):
     for i in range(1, len(smat_list)):
         smat = star_product_geometric(smat, smat_list[i], order)
 
-    print("current 1", smat_list[0][0])
-    for i in range(1, len(smat_list)):
-        smat = star_product_geometric(smat, smat_list[i], order)
-        print("current: ", i+1 ,"\n", smat_list[i][0])
-        #print("s_mat ", i, ": ", smat_list[i][0] )
 
     return smat

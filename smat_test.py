@@ -32,26 +32,35 @@ SMAT_1 = np.squeeze(SMAT_1[H1_ind, W1_ind, L1_ind, :, :, :])
 
 SMAT_2 = data["SMAT_2"]
 SMAT_2 = np.squeeze(SMAT_2[H2_ind, RAD_ind, W2_ind, L2_ind, :, :, :])
-print("SMAT_2", SMAT_2[0])
+#print("SMAT_2", SMAT_2[0])
 # Build Stack
 #layer1 = NonMetaLayer(subs_h,n_SiO2)
-layer1 = MetaLayer(SMAT_1, n_SiO2, n_SiO2)
-layer2 = NonMetaLayer(np.array([1, 2])*H_Sp, n_SiO2)
+time_dat=[]
 
-layer3 = MetaLayer(SMAT_2, n_SiO2, n_SiO2)
-layer3.rotate(35)
+for i in range(1,3000,100):
+    print(i)
+    layer1 = MetaLayer(SMAT_1, n_SiO2, n_SiO2)
+    layer2 = NonMetaLayer(n_SiO2, height=np.ones(i)*H_Sp)
 
-layer4 = NonMetaLayer(subs_h, n_SiO2)
-layer_list = [layer1, layer2, layer3, layer4]
-stack1 = Stack(layer_list, lambda_FMM, n_SiO2, n_vac)
-stack1.geo_on()
-stack1.geo_order = 5
-t1 = time.perf_counter()
-s_out = stack1.build()
-t2 = time.perf_counter()
-print("Ausgabe", s_out[0, 0, :, :])
-print("Time in s", t2-t1)
+    layer3 = MetaLayer(SMAT_2, n_SiO2, n_SiO2)
+    layer3.rotate(35)
+
+    layer4 = NonMetaLayer(n_SiO2, height=subs_h)
+    layer_list = [layer1, layer2, layer3, layer4]
+    stack1 = Stack(layer_list, lambda_FMM, n_SiO2, n_vac)
+    t1 = time.perf_counter()
+    s_out = stack1.build()
+    #s_out2 = stack1.order_up_to(5)
+    t2 = time.perf_counter()
+    time_dat.append(t2-t1)
+
+plt.loglog(np.arange(1,3000,100), time_dat)
+plt.show()
+
 """
+print("Ausgabe", s_out[0, 0, :, :])
+#print("Up_to", s_out2[-1][0,0,:,:])
+print("Time in s", t2-t1)
 #intensity plot
 index_1 = 2
 index_2 = 2

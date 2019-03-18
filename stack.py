@@ -58,7 +58,7 @@ class NonMetaLayer(Layer):
             If only one vector is given homogenous behavior will be assumed.
     """
 
-    def __init__(self, height, *n_vec):
+    def __init__(self, *n_vec, height):
         Layer.__init__(self)
         self.height = height
         self.height_len = np.size(self.height)
@@ -100,11 +100,8 @@ class Stack:
         self.substrate = substrate
         self.wav_vec = wav_vec
         self.wav_vec_len = len(self.wav_vec)
-        self.geo_bool = False
-        self.geo_order = 5
-
-    def geo_on(self):
-        self.geo_bool = True
+        self.__geo_bool = False
+        self.__geo_order = 5
 
     def create_propagator(self, layer):
         """
@@ -211,7 +208,7 @@ class Stack:
         -------
         s_mat : Lx4x4 S-Matrix
         """
-        vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
+        vacuum_layer = NonMetaLayer(np.ones(self.wav_vec_len), height=None)
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
         s_mat = star_product_analyt(rot_smat(s_mat1, l_2.angle),
@@ -229,8 +226,8 @@ class Stack:
                 dimension is HxLx4x4 when a height vector was given
         """
         # Create Layer-Objects for the cladding and substrate
-        clad_layer = NonMetaLayer(None, self.cladding)
-        subs_layer = NonMetaLayer(None, self.substrate)
+        clad_layer = NonMetaLayer(self.cladding, height=None)
+        subs_layer = NonMetaLayer(self.substrate, height=None)
 
         # add the substrate layer to the back
         self.layer_list.append(subs_layer)
@@ -255,7 +252,8 @@ class Stack:
             s_mat_list.append(prop)
             s_mat_list.append(inter)
         # end building loop
-        if self.geo_bool:
+        if self.__geo_bool:
+            print("Got called with order ", self.order)
             s_out = star_product_cascaded_geo(s_mat_list, self.geo_order).squeeze()
         else:
             s_out = star_product_cascaded(s_mat_list).squeeze()
@@ -263,6 +261,22 @@ class Stack:
         # remove subs_layer from the layer list
         del self.layer_list[-1]
         return s_out
+
+    def build_geo(self, order):
+        """
+        A version of build using star_product_cascaded_geo(), change this doc_str
+
+        Returns
+        -------
+        s_mat : Lx4x4 or HxLx4x4 numpy array
+                S-matrix describing the behavior of the whole stack. The
+                dimension is HxLx4x4 when a height vector was given
+        """
+        self.geo_order = order
+        self.geo_bool = True
+        s_mat = self.build()
+        self.geo_bool = False
+        return s_mat
 
     def order(self, order):
         """
@@ -288,5 +302,43 @@ class Stack:
         self.geo_order = order
         current_smat = self.build()
         s_out = current_smat - previous_smat
+        self.geo_bool = False
 
         return s_out
+
+    def order_up_to(self, order):
+        """
+        Builds a list of S-matrices up to the target order.
+
+        Parameters
+        ----------
+        order : int
+
+        Returns
+        -------
+        s_list : list of  HxLx4x4 numpy Arrays
+        """
+        """
+        currently cant get this working will use the stupid way,
+        maybe the optimisation is unnecassry
+        s_list = []
+        self.geo_bool = True
+        self.order = order
+        previous_order = self.build()
+        for i in range(order-1, 0, -1):
+            self.order = i
+            print(i,end=":")
+            current_order = self.build()
+            print(previous_order[0,0,0,0])
+            print(current_order[0,0,0,0])
+            s_list.insert(0, previous_order - current_order)
+            previous_order = current_order
+
+        self.geo_bool = False
+        return s_list
+        """
+        s_list = []
+        self.geo_bool = True
+        for i in range(1, order+1):
+            s_list.append(self.order(i))
+        return s_list
