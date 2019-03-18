@@ -58,7 +58,7 @@ class NonMetaLayer(Layer):
             If only one vector is given homogenous behavior will be assumed.
     """
 
-    def __init__(self, height, *n_vec):
+    def __init__(self, *n_vec, height):
         Layer.__init__(self)
         self.height = height
         self.height_len = np.size(self.height)
@@ -208,7 +208,7 @@ class Stack:
         -------
         s_mat : Lx4x4 S-Matrix
         """
-        vacuum_layer = NonMetaLayer(0, np.ones(self.wav_vec_len))
+        vacuum_layer = NonMetaLayer(np.ones(self.wav_vec_len), height=None)
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
         s_mat = star_product_analyt(rot_smat(s_mat1, l_2.angle),
@@ -226,8 +226,8 @@ class Stack:
                 dimension is HxLx4x4 when a height vector was given
         """
         # Create Layer-Objects for the cladding and substrate
-        clad_layer = NonMetaLayer(None, self.cladding)
-        subs_layer = NonMetaLayer(None, self.substrate)
+        clad_layer = NonMetaLayer(self.cladding, height=None)
+        subs_layer = NonMetaLayer(self.substrate, height=None)
 
         # add the substrate layer to the back
         self.layer_list.append(subs_layer)

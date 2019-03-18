@@ -45,9 +45,9 @@ meta1 = MetaLayer(s_mat = s_mat_1,
                   substrate = n_SiO2)
 
 sp_h = 350 / 1000
-spacer = NonMetaLayer(sp_h, # height
-                      n_SiO2) # at this point you can also imput two vectors for
-                              # anisotropic behavior
+spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
+                      height = sp_h) # anisotropic behavior
+
 
 
 meta2 = MetaLayer(s_mat = s_mat_2,
@@ -55,8 +55,8 @@ meta2 = MetaLayer(s_mat = s_mat_2,
                   substrate = n_SiO2)
 
 subs_h = 910 / 1000
-substrate = NonMetaLayer(subs_h,
-                         n_SiO2)
+substrate = NonMetaLayer(n_SiO2,
+                         height=subs_h)
 
 # Define the stack
 stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
@@ -77,4 +77,4 @@ plt.show()
 
 # Further fuctionality
 # ------------------------------------------------------------------------
-# 
+#
