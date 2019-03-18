@@ -27,13 +27,13 @@ s_mat_2 = data["SMAT_2"]
 s_mat_2 = np.squeeze(s_mat_2[H2_ind, RAD_ind, W2_ind, L2_ind, :, :, :])
 
 # simulated wavelengths
-wavleghts = np.linspace(0.6, 1.62, 64)
+wavlenghts = np.linspace(0.6, 1.62, 64)
 
 # smat_1 and smat_2 are now 64x4x4
 # define the refractiv indeces of further materials in the stack at the
 # simulated wavelengths
 n_SiO2 = data["n_SiO2"]
-n_vac = np.ones(wavleghts.size)
+n_vac = np.ones(wavlenghts.size)
 
 # Define the layers in the stack the target looks like this:
 # ---------------------------------------------------------------------
@@ -60,7 +60,7 @@ substrate = NonMetaLayer(n_SiO2,
 
 # Define the stack
 stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
-              wav_vec = wavleghts,
+              wav_vec = wavlenghts,
               cladding = n_SiO2,
               substrate = n_vac) # The "substrate" of the Stack is in this case vacuum
 
@@ -73,9 +73,10 @@ s_out = stack.build()
 t2 = perf_counter()
 print("Execution time: ", t2-t1)
 print(s_out[0,:,:])
+print("sum", np.sum(s_out))
 # plot the results
 intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
-plt.plot(wavleghts, np.squeeze(intensity))
+plt.plot(wavlenghts, np.squeeze(intensity))
 plt.show()
 
 # Further fuctionality
