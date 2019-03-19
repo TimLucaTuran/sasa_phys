@@ -120,8 +120,10 @@ def star_product_cascaded(smat_list):
         raise ValueError("List has to be length 2 or larger")
 
     smat = smat_list[0]
+    print("Erste Matrix", smat[0,0,:,:])
     for i in range(1, len(smat_list)):
         smat = star_product_analyt(smat, smat_list[i])
+        print("Matrix: ", smat_list[i][0,0,:,:])
 
     return smat
 
@@ -152,6 +154,5 @@ def star_product_cascaded_geo(smat_list, order):
 
     for i in range(1, len(smat_list)):
         smat = star_product_geometric(smat, smat_list[i], order)
-
 
     return smat
