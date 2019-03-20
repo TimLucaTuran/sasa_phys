@@ -1,2 +1,6 @@
 *pycache*
 advanced_testing/materials/
+build*
+*.c
+*.cpython*
+*.html
