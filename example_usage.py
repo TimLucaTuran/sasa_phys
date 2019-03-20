@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
+from time import perf_counter
 
 
 # Load S-matrices of externally simulated/measured Metasurface
@@ -68,7 +69,11 @@ stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
 meta2.rotate(35) #in deg
 
 # calculate the s-matrix describing the whole stack
+t1 = perf_counter()
 s_out = stack.build()
+t2 = perf_counter()
+
+print("Execution time: ", t2-t1)
 print(s_out[0,:,:])
 # plot the results
 # intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
