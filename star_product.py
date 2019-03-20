@@ -1,5 +1,5 @@
 import numpy as np
-from numba import jit
+import star_product_c
 
 
 
@@ -160,8 +160,7 @@ def star_product_cascaded(smat_list):
 
     smat = smat_list[0]
     for i in range(1, len(smat_list)):
-        smat = star_product(smat, smat_list[i])
-
+        smat = star_product_c.star_product(smat, smat_list[i])
     return smat
 
 def star_product_cascaded_geo(smat_list, order):

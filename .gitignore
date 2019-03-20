@@ -1,1 +1,5 @@
 *pycache*
+*build*
+*.c
+*.cpython*
+*.html
