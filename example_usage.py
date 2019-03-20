@@ -5,6 +5,7 @@ from stack import MetaLayer, NonMetaLayer, Stack
 from time import perf_counter
 import cProfile
 
+
 # Load S-matrices of externally simulated/measured Metasurface
 #------------------------------------------------------------------------
 # S-matrices are shaped Lx4x4 where L is the number of simulated/measured
@@ -47,7 +48,7 @@ meta1 = MetaLayer(s_mat = s_mat_1,
 
 sp_h = 350 / 1000
 spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
-                      height = sp_h) # anisotropic behavior *np.ones(1000)
+                      height = sp_h*np.ones(5000)) # anisotropic behavior
 
 
 
@@ -72,13 +73,14 @@ meta2.rotate(35) #in deg
 t1 = perf_counter()
 s_out = cProfile.run("stack.build()")
 t2 = perf_counter()
-print("Execution time: ", t2-t1)
-print(s_out.shape)
-print(s_out[1])
-print("sum", np.sum(s_out))
+
+
+print("Execution Time: ", t2-t1)
+print(s_out[50,0,:,:])
+
 # plot the results
-intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
-plt.plot(wavlenghts, np.squeeze(intensity))
+intensity = np.abs( s_out[0,:, 2, 2] )**2 / n_SiO2
+plt.plot(wavleghts, np.squeeze(intensity))
 plt.show()
 
 # Further fuctionality
