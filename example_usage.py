@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
+from time import perf_counter
+from star_product import star_product_analyt
+import star_product_c
 
 
 # Load S-matrices of externally simulated/measured Metasurface
@@ -46,7 +49,7 @@ meta1 = MetaLayer(s_mat = s_mat_1,
 
 sp_h = 350 / 1000
 spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
-                      height = sp_h) # anisotropic behavior
+                      height = sp_h*np.ones(5000)) # anisotropic behavior
 
 
 
@@ -68,10 +71,14 @@ stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
 meta2.rotate(35) #in deg
 
 # calculate the s-matrix describing the whole stack
+t1 = perf_counter()
 s_out = stack.build()
+t2 = perf_counter()
 
+print("Execution Time: ", t2-t1)
+print(s_out[50,0,:,:])
 # plot the results
-intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
+intensity = np.abs( s_out[0,:, 2, 2] )**2 / n_SiO2
 plt.plot(wavleghts, np.squeeze(intensity))
 plt.show()
 

@@ -1,5 +1,5 @@
 import numpy as np
-
+import star_product_c
 
 def star_product_analyt(SIN_1,SIN_2):
     """
@@ -121,7 +121,7 @@ def star_product_cascaded(smat_list):
 
     smat = smat_list[0]
     for i in range(1, len(smat_list)):
-        smat = star_product_analyt(smat, smat_list[i])
+        smat = star_product_c.star_product(smat, smat_list[i])
 
     return smat
 
