@@ -162,15 +162,15 @@ class Stack:
             n1_x = l_1.n_x
             n1_y = l_1.n_y
         else:
-            n1_x = l_1.substrate
-            n1_y = l_1.substrate
+            n1_x = l_1.cladding
+            n1_y = l_1.cladding
 
         if(type(l_2) is NonMetaLayer):
             n2_x = l_2.n_x
             n2_y = l_2.n_y
         else:
-            n2_x = l_2.cladding
-            n2_y = l_2.cladding
+            n2_x = l_2.substrate
+            n2_y = l_2.substrate
 
         # transmission and reflection in x and y direction
 
