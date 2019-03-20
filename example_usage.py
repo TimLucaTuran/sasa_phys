@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
 from time import perf_counter
-from star_product import star_product_analyt
-import star_product_c
 
 
 # Load S-matrices of externally simulated/measured Metasurface
@@ -75,8 +73,10 @@ t1 = perf_counter()
 s_out = stack.build()
 t2 = perf_counter()
 
+
 print("Execution Time: ", t2-t1)
 print(s_out[50,0,:,:])
+
 # plot the results
 intensity = np.abs( s_out[0,:, 2, 2] )**2 / n_SiO2
 plt.plot(wavleghts, np.squeeze(intensity))
