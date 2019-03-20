@@ -253,7 +253,6 @@ class Stack:
             s_mat_list.append(inter)
         # end building loop
         if self.__geo_bool:
-            print("Got called with order ", self.order)
             s_out = star_product_cascaded_geo(s_mat_list, self.geo_order).squeeze()
         else:
             s_out = star_product_cascaded(s_mat_list).squeeze()
