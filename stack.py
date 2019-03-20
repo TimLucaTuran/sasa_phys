@@ -1,6 +1,7 @@
 import numpy as np
-from star_product import *
+from star_product import star_product_cascaded, star_product_cascaded_geo
 from smat_oparations import *
+import star_product_c
 
 
 class Layer:
@@ -211,8 +212,8 @@ class Stack:
         vacuum_layer = NonMetaLayer(np.ones(self.wav_vec_len), height=None)
         s_mat1 = self.create_interface(vacuum_layer, l_2)
         s_mat2 = self.create_interface(l_1, vacuum_layer)
-        s_mat = star_product(rot_smat(s_mat1, l_2.angle),
-                             rot_smat(s_mat2, l_1.angle))
+        s_mat = star_product_c.star_product(rot_smat(s_mat1, l_2.angle),
+                                            rot_smat(s_mat2, l_1.angle))
         return s_mat
 
     def build(self):

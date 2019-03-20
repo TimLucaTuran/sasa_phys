@@ -71,7 +71,7 @@ meta2.rotate(35) #in deg
 
 # calculate the s-matrix describing the whole stack
 t1 = perf_counter()
-s_out = cProfile.run("stack.build()")
+s_out = stack.build()
 t2 = perf_counter()
 
 
@@ -80,7 +80,7 @@ print(s_out[50,0,:,:])
 
 # plot the results
 intensity = np.abs( s_out[0,:, 2, 2] )**2 / n_SiO2
-plt.plot(wavleghts, np.squeeze(intensity))
+plt.plot(wavlenghts, np.squeeze(intensity))
 plt.show()
 
 # Further fuctionality
