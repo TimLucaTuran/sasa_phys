@@ -45,7 +45,7 @@ meta1 = MetaLayer(s_mat = s_mat_1,
                   cladding = n_SiO2,
                   substrate = n_SiO2)
 
-sp_h = 350 / 1000
+sp_h = np.arange(0.001,1,0.001)
 spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
                       height = sp_h) # anisotropic behavior
 
@@ -56,7 +56,7 @@ meta2 = MetaLayer(s_mat = s_mat_2,
                   substrate = n_SiO2)
 
 #make height vector
-subs_h = np.arange(0.01,2,0.005)
+subs_h = 910 / 1000
 substrate = NonMetaLayer(n_SiO2,
                          height=subs_h)
 
@@ -73,13 +73,19 @@ meta2.rotate(35) #in deg
 s_out = stack.build()
 # Define regarded wavelength
 num_wl = 30
-# print(wavleghts[40])
-# print(n_SiO2[:,40])
-# print(s_out[0,40, 2, 2] )
 # plot the results
 intensity = np.abs( s_out[:,num_wl, 2, 2] )**2 / n_SiO2[:,num_wl]
-# intensity = np.abs( s_out[num_wl,:, 2, 2] )**2 / n_SiO2
-plt.plot(subs_h, np.squeeze(intensity))
+plt.plot(sp_h, np.squeeze(intensity))
+
+###### 3D Surface Plot ##########
+# sp_h, wavleghts = np.meshgrid(wavleghts,sp_h)
+# intensity = np.abs( s_out[:,:, 2, 2] )**2 / n_SiO2
+# ax = plt.axes(projection='3d')
+# ax.plot_surface(sp_h,wavleghts, intensity, color='b')
+# ax.set_ylabel('height of layer')
+# ax.set_xlabel('wavelength')
+# ax.set_zlabel('intensity')
+
 plt.show()
 
 # Further fuctionality
