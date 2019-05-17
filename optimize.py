@@ -1,8 +1,9 @@
-import numpy as np
+import autograd.numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
 from mpl_toolkits import mplot3d
+from autograd import grad
 
 
 # Load S-matrices of externally simulated/measured Metasurface
@@ -40,42 +41,52 @@ n_vac = np.ones(wavleghts.size)
 # ---------------------------------------------------------------------
 # | Cladding | Meta-layer 1 | Spacer | Meta-layer 2 | substrate | Vacuum | <--Light
 # ---------------------------------------------------------------------
+def f(input):
+    meta1 = MetaLayer(s_mat = s_mat_1,
+                      cladding = n_SiO2,
+                      substrate = n_SiO2)
+    sp_h = input
+    spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
+                          height = sp_h) # anisotropic behavior
 
-meta1 = MetaLayer(s_mat = s_mat_1,
+
+
+    meta2 = MetaLayer(s_mat = s_mat_2,
+                      cladding = n_SiO2,
+                      substrate = n_SiO2)
+
+    #make height vector
+    subs_h = 910 / 1000
+    substrate = NonMetaLayer(n_SiO2,
+                             height=subs_h)
+
+    # Define the stack
+    stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
+                  wav_vec = wavleghts,
                   cladding = n_SiO2,
-                  substrate = n_SiO2)
+                  substrate = n_vac) # The "substrate" of the Stack is in this case vacuum
 
-sp_h = np.arange(0.001,1,0.001)
-spacer = NonMetaLayer(n_SiO2, # at this point you can also imput two vectors for
-                      height = sp_h) # anisotropic behavior
+    # Optionally apply symmetry opperations to the layers (mirror, flip and rotate)
+    meta2.rotate(35) #in deg
 
+    # calculate the s-matrix describing the whole stack
+    s_out = stack.build()
+    # Define regarded wavelength
+    num_wl = 2
+    # print(s_out[0,num_wl, 2, 2])
+    # plot the results
+    intensity = np.abs( s_out[num_wl, 1, 1] )**2 / n_SiO2[:,num_wl]
+    return np.squeeze(intensity)
+# print(np.gradient(intensity))
+new = grad(f)
+print(f(np.pi))
+# x = np.arange(1,0.01,4)
+print(new(1.0))
+# plt.plot(x,f(x))
 
-
-meta2 = MetaLayer(s_mat = s_mat_2,
-                  cladding = n_SiO2,
-                  substrate = n_SiO2)
-
-#make height vector
-subs_h = 910 / 1000
-substrate = NonMetaLayer(n_SiO2,
-                         height=subs_h)
-
-# Define the stack
-stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
-              wav_vec = wavleghts,
-              cladding = n_SiO2,
-              substrate = n_vac) # The "substrate" of the Stack is in this case vacuum
-
-# Optionally apply symmetry opperations to the layers (mirror, flip and rotate)
-meta2.rotate(35) #in deg
-
-# calculate the s-matrix describing the whole stack
-s_out = stack.build()
-# Define regarded wavelength
-num_wl = 30
-# plot the results
-intensity = np.abs( s_out[:,num_wl, 2, 2] )**2 / n_SiO2[:,num_wl]
-plt.plot(sp_h, np.squeeze(intensity))
+# plt.plot(sp_h, np.squeeze(intensity))
+#print(new(np.arange(1,1,len(sp_h))))
+# plt.plot(sp_h, f(np.arange(1,1,len(sp_h))))
 
 ###### 3D Surface Plot ##########
 # sp_h, wavleghts = np.meshgrid(wavleghts,sp_h)
