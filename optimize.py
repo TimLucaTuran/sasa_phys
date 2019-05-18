@@ -79,9 +79,10 @@ def f(input):
     return np.squeeze(intensity)
 # print(np.gradient(intensity))
 new = grad(f)
-print(f(np.pi))
+print(new(1.1))
+# print(f(np.pi))
 # x = np.arange(1,0.01,4)
-print(new(1.0))
+# print(new(0.0))
 # plt.plot(x,f(x))
 
 # plt.plot(sp_h, np.squeeze(intensity))
