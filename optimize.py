@@ -1,5 +1,6 @@
 import autograd.numpy as np
 import matplotlib.pyplot as plt
+import autograd
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
 from mpl_toolkits import mplot3d
@@ -78,9 +79,9 @@ def f(input):
     intensity = np.abs( s_out[num_wl, 1, 1] )**2 / n_SiO2[:,num_wl]
     return np.squeeze(intensity)
 # print(np.gradient(intensity))
-new = grad(f)
-print(f(1.1))
-print(f(2.3))
+new = autograd.jacobian(f)
+print(f(1))
+print(new(1.0))
 # print(f(np.pi))
 # x = np.arange(1,0.01,4)
 # print(new(0.0))

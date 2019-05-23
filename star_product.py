@@ -1,4 +1,4 @@
-import numpy as np
+import autograd.numpy as np
 
 
 def star_product_analyt(SIN_1,SIN_2):

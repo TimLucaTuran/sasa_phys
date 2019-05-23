@@ -1,4 +1,5 @@
-import numpy as np
+import autograd.numpy as np
+import autograd
 from math import e
 from star_product import *
 from smat_oparations import *
@@ -121,10 +122,17 @@ class Stack:
         if type(layer) is NonMetaLayer:
 
             s_mat = np.zeros((layer.height_len, self.wav_vec_len, 4, 4)).astype(complex)
-            prop_x = e**(2j*np.pi * np.outer(layer.height, layer.n_x/self.wav_vec))
-            prop_y = e**(2j*np.pi * np.outer(layer.height, layer.n_y/self.wav_vec))
-            print(np.size(prop_x))
-            s_mat[:, :, 0, 0] = prop_x
+            """
+            print(layer.height)
+            print(layer.n_x)
+            print(self.wav_vec)
+            """
+            # prop_x = np.outer(layer.height, layer.n_x/self.wav_vec)
+            prop_x = np.exp(2j*np.pi * np.outer(layer.height, layer.n_x/self.wav_vec))
+            print(prop_x[0,5])
+            prop_y = np.exp(2j*np.pi * np.outer(layer.height, layer.n_y/self.wav_vec))
+            # print(np.size(prop_x))
+            s_mat[:,:, 0, 0] = prop_x
             s_mat[:, :, 1, 1] = prop_y
             s_mat[:, :, 2, 2] = prop_x
             s_mat[:, :, 3, 3] = prop_y
