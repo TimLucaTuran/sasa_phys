@@ -1,5 +1,4 @@
-import autograd.numpy as np
-import autograd
+import numpy as np
 from math import e
 from star_product import *
 from smat_oparations import *

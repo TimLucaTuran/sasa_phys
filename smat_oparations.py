@@ -1,4 +1,4 @@
-import autograd.numpy as np
+import numpy as np
 
 def mirror_smat(s_mat):
     """
