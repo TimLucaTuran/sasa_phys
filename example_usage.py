@@ -69,7 +69,9 @@ meta2.rotate(35) #in deg
 
 # calculate the s-matrix describing the whole stack
 s_out = stack.build()
-print(s_out[0,:,:])
+my_smat =s_out[0,:,:]
+my_smat_h = np.conj(my_smat).transpose()
+print(my_smat)
 # plot the results
 # intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
 # plt.plot(wavleghts, np.squeeze(intensity))

@@ -128,7 +128,7 @@ class Stack:
             """
             # prop_x = np.outer(layer.height, layer.n_x/self.wav_vec)
             prop_x = np.exp(2j*np.pi * np.outer(layer.height, layer.n_x/self.wav_vec))
-            print(prop_x[0,5])
+            # print(prop_x[0,5])
             prop_y = np.exp(2j*np.pi * np.outer(layer.height, layer.n_y/self.wav_vec))
             # print(np.size(prop_x))
             s_mat[:,:, 0, 0] = prop_x

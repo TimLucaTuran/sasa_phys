@@ -1,0 +1,22 @@
+Ziele:
+- extremierung für ca. 10 schichten (sehr schwierig)
+- sasa matching (gegebene metamaterialien, gesucht dicken) !!!!! (stifte nacheinander machen)
+- sasa matching auf datenbank
+- training neuronale netze
+
+Aufgaben:
+- Sasa zum finden von 3 schichter
+- Deep learning auf basis sql datenbank
+- Wiki für Dokumentation
+
+Alternative:
+- allgemeine S-matrix symetry -> Transformationsregeln
+txx   txy   rbxx  rbxy
+tyx   tyy   rbyx  rbyy
+rfxx  rfxy  txx   tyx
+rfxx  rfxy  tyx   tyy
+
+12 Freiheitsgrade!
+- Paper physikalische Beispiele anschauen !!!!!!
+
+Dokumentation der sachen machen... tex protokoll
