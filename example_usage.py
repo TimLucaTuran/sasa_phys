@@ -26,6 +26,9 @@ L2_ind = 0  # length 220:5:250 nm
 s_mat_2 = data["SMAT_2"]
 s_mat_2 = np.squeeze(s_mat_2[H2_ind, RAD_ind, W2_ind, L2_ind, :, :, :])
 
+print(np.matrix(s_mat_1[0,:,:]))
+print(np.matrix(s_mat_2[0,:,:]))
+
 # simulated wavelengths
 wavleghts = np.linspace(0.6, 1.62, 64)
 
