@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+plt.switch_backend('TkAgg')
 from scipy.io import loadmat
 from stack import MetaLayer, NonMetaLayer, Stack
 from time import perf_counter
@@ -76,9 +77,13 @@ t2 = perf_counter()
 print("Execution time: ", t2-t1)
 print(s_out[0,:,:])
 # plot the results
-# intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
-# plt.plot(wavleghts, np.squeeze(intensity))
-# plt.show()
+
+intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
+
+plt.plot(wavleghts, np.squeeze(intensity))
+
+
+plt.show()
 
 # Further fuctionality
 # ------------------------------------------------------------------------
