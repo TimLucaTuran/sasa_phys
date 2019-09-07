@@ -1,4 +1,3 @@
-import sphinx_rtd_theme
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -14,8 +13,17 @@ import sphinx_rtd_theme
 import os
 import sys
 from pathlib import Path
-print(os.path.abspath(os.path.join(__file__ ,"../../..")))
+from unittest.mock import MagicMock
 sys.path.insert(0, os.path.abspath(os.path.join(__file__ ,"../../..")))
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['numpy']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 
 
 # -- Project information -----------------------------------------------------
@@ -30,8 +38,7 @@ author = 'Tim Turan, Max Breauer'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx_rtd_theme',
-              'sphinx.ext.autodoc',
+extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.napoleon',
 ]
