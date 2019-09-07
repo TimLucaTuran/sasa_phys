@@ -11,8 +11,12 @@ Guide
 ^^^^^
     print('hello')
 
+.. automodule:: stack
+    :members:
+
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
    help
 
