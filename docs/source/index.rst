@@ -1,26 +1,39 @@
-SASA-Documentation
+SASA - Semi Analytic Stacking Algorithm
 ============================================================
 
+This Software allows you to calculate the optical behavior of stacked materials.
+It requires you to already know the Jonas-Matrices of the complex layers in your
+Stack and works out their interactions. Calculations are based on 4 by 4 composite
+Jonas matrices and the Starproduct between them.
 
-Another Header
-==============
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+.. math::
+   S =
+   \left(
+   \begin{matrix}
+       T_f & R_f \\
+       R_b & T_b \\
+  \end{matrix}
+  \right)
 
+Symmetry operations can be applied directly to these Matrices 
 
-.. automodule:: stack
-    :members:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   help
+   stack
+   operations
+   starproduct
 
 
+References
+^^^^^^^^^^
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+[1] J. Sperrhake, M. Decker, M. Falkner, S. Fasold, T. Kaiser, I. Staude, T. Pertsch,
+    "Analyzing the polarization response of a chiral metasurface stack by semi-analytic modeling",
+    Optics Express 1246, 2019
+[2] C. Menzel, J. Sperrhake, T. Pertsch,
+    "Efficient treatment of stacked metasurfaces for optimizing and enhancing the range of accessible optical functionalities",
+    Physical Review A 93, 2016
+[3] J. Sperrhake, T. Kaiser, M. Falkner, S. Fasold, T. Pertsch,
+    "Interaction of reflection paths of light in metasurfaces stacks",

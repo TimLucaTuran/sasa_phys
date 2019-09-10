@@ -86,7 +86,6 @@ class Stack:
               measured
     cladding : vector
                The refrectiv indeces of the cladding.
-
     substrate : vector
                 The refractiv indeces of the substrate. The first material to be
                 hit by light.
@@ -148,12 +147,13 @@ class Stack:
 
         Parameters
         ----------
-        l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+        l_1 :  NonMetaLayer or MetaLayer Objects
+        l_2 :  NonMetaLayer or MetaLayer Objects
 
         Returns
         -------
         s_mat : L x 4 x 4 numpy array
-            interface S-Matrix
+                interface S-Matrix
         """
 
         # load n_* from the Layers
@@ -202,7 +202,8 @@ class Stack:
 
         Parameters
         ----------
-        l_1 , l_2:  NonMetaLayer or MetaLayer Objects
+        l_1 :  NonMetaLayer or MetaLayer Objects
+        l_2 :  NonMetaLayer or MetaLayer Objects
 
         Returns
         -------

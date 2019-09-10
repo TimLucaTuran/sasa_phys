@@ -41,6 +41,7 @@ author = 'Tim Turan, Max Breauer'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.napoleon',
+              'sphinx.ext.mathjax',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
