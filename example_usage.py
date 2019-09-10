@@ -27,7 +27,7 @@ s_mat_2 = data["SMAT_2"]
 s_mat_2 = np.squeeze(s_mat_2[H2_ind, RAD_ind, W2_ind, L2_ind, :, :, :])
 
 print(np.matrix(s_mat_1[0,:,:]))
-print(np.matrix(s_mat_2[0,:,:]))
+# print(np.matrix(s_mat_2[0,:,:]))
 
 # simulated wavelengths
 wavleghts = np.linspace(0.6, 1.62, 64)
@@ -62,23 +62,23 @@ substrate = NonMetaLayer(n_SiO2,
                          height=subs_h)
 
 # Define the stack
-stack = Stack(layer_list = [meta1, spacer, meta2, substrate],
+stack = Stack(layer_list = [meta1, spacer, meta2,meta2,meta2, substrate],
               wav_vec = wavleghts,
               cladding = n_SiO2,
               substrate = n_vac) # The "substrate" of the Stack is in this case vacuum
 
 # Optionally apply symmetry opperations to the layers (mirror, flip and rotate)
-meta2.rotate(35) #in deg
+meta1.rotate(80) #in deg
 
 # calculate the s-matrix describing the whole stack
 s_out = stack.build()
 my_smat =s_out[0,:,:]
-my_smat_h = np.conj(my_smat).transpose()
-print(my_smat)
+# my_smat_h = np.conj(my_smat).transpose()
+# print(my_smat)
 # plot the results
-# intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
-# plt.plot(wavleghts, np.squeeze(intensity))
-# plt.show()
+intensity = np.abs( s_out[:, 2, 2] )**2 / n_SiO2
+plt.plot(wavleghts, np.squeeze(intensity))
+plt.show()
 
 # Further fuctionality
 # ------------------------------------------------------------------------
