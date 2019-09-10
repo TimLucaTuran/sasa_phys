@@ -3,8 +3,9 @@ SASA - Semi Analytic Stacking Algorithm
 
 This Software allows you to calculate the optical behavior of stacked materials.
 It requires you to already know the Jonas-Matrices of the complex layers in your
-Stack and works out their interactions. Calculations are based on 4 by 4 composite
-Jonas matrices and the Starproduct between them.
+Stack and works out their interactions. Calculations are based on Lx4x4 composite
+Jonas matrices, called S-matrices, and the Starproduct between them. L represents
+the wavelengths were you wish to calculate the behavior.
 
 .. math::
    S =
@@ -15,7 +16,28 @@ Jonas matrices and the Starproduct between them.
   \end{matrix}
   \right)
 
-Symmetry operations can be applied directly to these Matrices 
+:math:`T_f:` Transmission Jonas matrix for light coming from the front
+
+:math:`R_b:` Reflection for the back
+
+Usage
+^^^^^
+The exact usage is described in example_usage.py. In general you have to define
+multiple Layer-Objects::
+
+    l1 = MetaLayer(s_mat, cladding, substrate)
+    l2 = NonMetaLayer(n_vec, cladding, substrate)
+
+These can be Meta-Layers where you need to provide a Lx4x4 S-matrix or Non-Meta-Layers
+where you need to provide a vector of refractive indices's at the desired
+wavelengths. Then you pass the layers to a stack object and build your result::
+
+    s = Stack([l1,l2,...], wavelengths, cladding, substrate)
+    result = s.build()
+
+In the case of layers cladding and substrate represent the environment in which
+s_mat or n_vec were measured. For Stack its what materials are blow/on-top
+of the Stack.
 
 
 .. toctree::
