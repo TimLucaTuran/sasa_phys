@@ -1,7 +1,7 @@
 The Starproduct
 ===============
 The Starproduct between two S-matrices is defined as follows:
-..math::  \left( \begin{array}{cc}
+.. math::  \left( \begin{array}{cc}
   r_1 &u_1\\
   w_1 & s_1 \\
   \end{array}\right) \star
