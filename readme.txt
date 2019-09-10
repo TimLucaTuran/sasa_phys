@@ -1,5 +1,9 @@
 SASA means "Semi Analytic Stacking Algorithm".
 
+Documentation:
+
+https://sasa.readthedocs.io/en/latest/starproduct.html
+
 
 Functionality:
 
