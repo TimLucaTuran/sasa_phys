@@ -15,6 +15,14 @@ The Starproduct between two S-matrices is defined as follows:
    w_1 + s_1 w_2 (1- u_1 w_2)^{-1} r_1  & s_1 (1-w_2 \cdot u_1)^{-1}s_2 \\
    \end{array}\right)
 
+. The following functions just apply this definition once analytically and once by usage of a geometric matrix series. Thats possible, because
+
+.. math::
+   (1-u_1 w_2)^{-1}
+
+
+
+could be easily written down in a series.
 
 .. automodule:: star_product
     :members:
