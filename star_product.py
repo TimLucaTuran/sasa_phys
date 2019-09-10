@@ -57,9 +57,9 @@ def star_product_geometric(SIN_1, SIN_2, order):
     Parameters
     ----------
     SIN_1: HxLx4x4 numpy array
-                   H is height_vec_len, the dimension of the height vector
-                   given to the layer object. (Most of the time equal to 1)
-                   L is wav_vec_len the number of measured wavelengths
+        H is height_vec_len, the dimension of the height vector
+        given to the layer object. (Most of the time equal to 1)
+        L is wav_vec_len the number of measured wavelengths
 
     order : int
 
