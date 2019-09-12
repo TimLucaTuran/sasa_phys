@@ -95,8 +95,8 @@ print(sp_h[np.where(np.abs(diff)<10**(-4))])
 ###### 3D Surface Plot ##########
 # sp_h, wavleghts = np.meshgrid(wavleghts,sp_h)
 # intensity = np.abs( s_out[:,:, 2, 2] )**2 / n_SiO2
-# ax = plt.axes(projection='3d')
-# ax.plot_surface(sp_h,wavleghts, intensity, color='b')
+ax = plt.axes(projection='3d')
+ax.plot_surface(sp_h,wavleghts, intensity, color='b')
 # ax.set_ylabel('height of layer')
 # ax.set_xlabel('wavelength')
 # ax.set_zlabel('intensity')
