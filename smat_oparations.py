@@ -47,23 +47,22 @@ def rot_smat(s_mat,ang):
 
     Parameters
     ----------
-    s_mat: L x 4 x 4 numpy Array
-        S-Matrix
-    ang: float
-        rotaion angle in rad
+    s_mat : Lx4x4 Array
+    ang   : float
+            rotaion angle in rad
 
     Returns
     -------
-    s_out: L x 4 x 4 numpy Array
-        rotated S-Matrix
+    s_out: Lx4x4 Array
+           rotated S-Matrix
     """
     #convert rotation angle in rad
     phi = ang * np.pi/180
     #number of wavelengths
     numel_wav = s_mat.shape[0]
     # Determine 2x2 rotation matrix to be applied on the matrix blocks
-    R = np.array([   [np.cos(phi), -np.sin(phi) ],
-            [np.sin(phi), np.cos(phi) ] ])
+    R = np.array([[np.cos(phi), -np.sin(phi) ],
+                  [np.sin(phi),  np.cos(phi) ] ])
     #Define right sided rotation operator of size 4x4
     Rot_op = np.block([     [R,                np.zeros((2,2))],
                             [np.zeros((2,2)),  R]])
