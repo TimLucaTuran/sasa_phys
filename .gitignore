@@ -1,6 +1,4 @@
-*pycache*
-advanced_testing/materials/
-build*
-*.c
-*.cpython*
-*.html
+__pycache__/
+build/
+dist/
+*.egg-info/
