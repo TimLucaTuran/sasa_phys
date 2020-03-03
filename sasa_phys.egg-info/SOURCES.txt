@@ -1,6 +1,0 @@
-README.md
-setup.py
-sasa_phys.egg-info/PKG-INFO
-sasa_phys.egg-info/SOURCES.txt
-sasa_phys.egg-info/dependency_links.txt
-sasa_phys.egg-info/top_level.txt
