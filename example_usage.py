@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
-from stack import MetaLayer, NonMetaLayer, Stack
+from sasa_phys.stack import MetaLayer, NonMetaLayer, Stack
 
 # Load S-matrices of externally simulated/measured Metasurface
 #------------------------------------------------------------------------
 # S-matrices are shaped Lx4x4 where L is the number of simulated/measured
 # wavelengths
 
-data = loadmat('SASA_example_data.mat')
+data = loadmat('example_data.mat')
 
 # First Meta-Layer parameters
 H1_ind = 0  # height [50, 55] nm

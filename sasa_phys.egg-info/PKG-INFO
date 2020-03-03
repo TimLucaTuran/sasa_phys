@@ -1,0 +1,40 @@
+Metadata-Version: 2.1
+Name: sasa-phys
+Version: 0.1
+Summary: Semi Analytic Stacking Algorithm for Meta Surface stacks
+Home-page: https://github.com/TimLucaTuran/SASA
+Author: Tim Luca Turan, Max Bräuer
+Author-email: timturan@web.de
+License: UNKNOWN
+Description: SASA "Semi Analytic Stacking Algorithm"
+        
+        
+        Documentation:
+        https://sasa.readthedocs.io/en/latest/index.html#
+        
+        
+        Functionality:
+        
+        - create arbitrary meta surface stacks and calculate their scatter matrices
+        - apply rotations and mirroring on single layers
+        - simulate different spacer heights
+        
+        
+        References:
+        
+        [1] J. Sperrhake, M. Decker, M. Falkner, S. Fasold, T. Kaiser, I. Staude, T. Pertsch,
+            "Analyzing the polarization response of a chiral metasurface stack by semi-analytic modeling",
+            Optics Express 1246, 2019
+        
+        [2] C. Menzel, J. Sperrhake, T. Pertsch,
+            "Efficient treatment of stacked metasurfaces for optimizing and enhancing the range of accessible optical functionalities",
+            Physical Review A 93, 2016
+        
+        [3] J. Sperrhake, T. Kaiser, M. Falkner, S. Fasold, T. Pertsch,
+            "Interaction of reflection paths of light in metasurfaces stacks"
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

@@ -9,13 +9,11 @@ setuptools.setup(
 
      version='0.1',
 
-     scripts=[] ,
-
      author="Tim Luca Turan, Max Bräuer",
 
      author_email="timturan@web.de",
 
-     description="Implementation of the Semi Analytic Stacking Algorithm for Meta Surface stacks",
+     description="Semi Analytic Stacking Algorithm for Meta Surface stacks",
 
      long_description=long_description,
 

@@ -1,6 +1,6 @@
 import numpy as np
-from star_product import *
-from smat_oparations import *
+from .star_product import *
+from .smat_oparations import *
 
 
 class Layer:
