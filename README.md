@@ -14,13 +14,13 @@ Functionality:
 
 References:
 
-*[1] J. Sperrhake, M. Decker, M. Falkner, S. Fasold, T. Kaiser, I. Staude, T. Pertsch,
+* [1] J. Sperrhake, M. Decker, M. Falkner, S. Fasold, T. Kaiser, I. Staude, T. Pertsch,
     "Analyzing the polarization response of a chiral metasurface stack by semi-analytic modeling",
     Optics Express 1246, 2019
 
-*[2] C. Menzel, J. Sperrhake, T. Pertsch,
+* [2] C. Menzel, J. Sperrhake, T. Pertsch,
     "Efficient treatment of stacked metasurfaces for optimizing and enhancing the range of accessible optical functionalities",
     Physical Review A 93, 2016
 
-*[3] J. Sperrhake, T. Kaiser, M. Falkner, S. Fasold, T. Pertsch,
+* [3] J. Sperrhake, T. Kaiser, M. Falkner, S. Fasold, T. Pertsch,
     "Interaction of reflection paths of light in metasurfaces stacks"
